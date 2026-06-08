@@ -417,7 +417,7 @@ then shows live job openings there.
   (free tier) to identify your skills. Don't upload anything you're not comfortable
   sharing with a third-party AI service.
 
-*A student project · QS rankings from QS World University Rankings 2026.*
+*QS rankings from QS World University Rankings 2026.*
 """)
 
 
@@ -464,7 +464,7 @@ with st.expander("📄 Smart match — upload your resume to match jobs to your 
                            "Showing all jobs — use the filter below.")
             else:
                 st.error(result.get("error", "Something went wrong."))
-        st.caption("⚠️ Resumes are analysed by Google's free-tier AI.")
+        st.caption("Resumes are analysed by Google's free-tier AI.")
     else:
         st.caption("Resume matching needs: pip install pypdf google-genai")
 
