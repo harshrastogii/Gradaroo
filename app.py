@@ -334,16 +334,26 @@ ul[role="listbox"] li[aria-selected="true"] *,
 }
 [data-testid="stExpander"] * { color: var(--ink) !important; }
 
-/* ---- Keep the sidebar collapse/expand button always visible ---- */
-[data-testid="stSidebarCollapsedControl"] {
-  display: block !important; visibility: visible !important;
-  opacity: 1 !important; color: var(--ink) !important;
+/* ---- LOCK the sidebar permanently open (controls are mandatory) ---- */
+/* hide the collapse arrow entirely so it can never be hidden */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+[data-testid="baseButton-headerNoPadding"] {
+  display: none !important;
 }
-[data-testid="collapsedControl"] {
-  display: block !important; visibility: visible !important; opacity: 1 !important;
+/* force the sidebar to stay visible and at full width */
+[data-testid="stSidebar"] {
+  display: block !important;
+  visibility: visible !important;
+  transform: none !important;
+  min-width: 300px !important;
+  width: 300px !important;
+  margin-left: 0 !important;
 }
-[data-testid="stSidebarCollapseButton"], [data-testid="baseButton-headerNoPadding"] {
-  visibility: visible !important; opacity: 1 !important;
+[data-testid="stSidebar"][aria-expanded="false"] {
+  transform: none !important;
+  margin-left: 0 !important;
 }
 </style>
 """, unsafe_allow_html=True)
