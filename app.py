@@ -171,6 +171,9 @@ st.markdown("""
 }
 
 .stApp { background: var(--paper); }
+/* Scale the whole app down slightly so it reads well at 100% zoom when deployed */
+html { font-size: 90%; }
+.block-container { max-width: 1100px; padding-top: 2rem; }
 html, body, [class*="css"], .stMarkdown, p, span, div, label {
   font-family: 'Libre Franklin', -apple-system, sans-serif;
   color: var(--ink);
@@ -179,12 +182,12 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 /* ---- HERO ---- */
 .hero { padding: 6px 0 2px; border-bottom: 1.5px solid var(--ink); margin-bottom: 4px; }
 .hero h1 {
-  font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 46px;
+  font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 40px;
   line-height: 1.0; letter-spacing: -0.02em; margin: 0; color: var(--ink);
 }
 .hero h1 .go { color: var(--accent); font-style: italic; }
 .hero .sub {
-  font-size: 15px; color: var(--muted); margin-top: 8px; font-weight: 400;
+  font-size: 14px; color: var(--muted); margin-top: 8px; font-weight: 400;
 }
 
 /* ---- UNIVERSITY BANNER ---- */
