@@ -333,6 +333,18 @@ ul[role="listbox"] li[aria-selected="true"] *,
   border: 1px solid var(--line) !important; border-radius: 8px !important;
 }
 [data-testid="stExpander"] * { color: var(--ink) !important; }
+
+/* ---- Keep the sidebar collapse/expand button always visible ---- */
+[data-testid="stSidebarCollapsedControl"] {
+  display: block !important; visibility: visible !important;
+  opacity: 1 !important; color: var(--ink) !important;
+}
+[data-testid="collapsedControl"] {
+  display: block !important; visibility: visible !important; opacity: 1 !important;
+}
+[data-testid="stSidebarCollapseButton"], [data-testid="baseButton-headerNoPadding"] {
+  visibility: visible !important; opacity: 1 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
