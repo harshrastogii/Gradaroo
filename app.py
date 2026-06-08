@@ -171,9 +171,10 @@ st.markdown("""
 }
 
 .stApp { background: var(--paper); }
-/* Scale the whole app down slightly so it reads well at 100% zoom when deployed */
-html { font-size: 90%; }
-.block-container { max-width: 1100px; padding-top: 2rem; }
+/* Scale the whole app down. Streamlit overrides root html, so target stApp too. */
+html { font-size: 88%; }
+.stApp, [data-testid="stAppViewContainer"] { font-size: 14px; }
+.block-container { max-width: 1050px; padding-top: 2rem; }
 html, body, [class*="css"], .stMarkdown, p, span, div, label {
   font-family: 'Libre Franklin', -apple-system, sans-serif;
   color: var(--ink);
