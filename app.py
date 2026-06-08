@@ -390,7 +390,7 @@ if _keys_missing():
 
 
 # ── ABOUT ─────────────────────────────────────────────────────────────────────
-with st.expander("ℹ️  About WhereGradsGo — how it works & data honesty"):
+with st.expander("About WhereGradsGo — how it works & data honesty"):
     st.markdown("""
 **The idea:** Employers that hire a lot of a university's graduates tend to keep
 hiring them. WhereGradsGo helps students start their search from those organisations,
