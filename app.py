@@ -371,6 +371,38 @@ if _keys_missing():
     st.stop()
 
 
+# ── ABOUT ─────────────────────────────────────────────────────────────────────
+with st.expander("ℹ️  About WhereGradsGo — how it works & data honesty"):
+    st.markdown("""
+**The idea:** Employers that hire a lot of a university's graduates tend to keep
+hiring them. WhereGradsGo helps students start their search from those organisations,
+then shows live job openings there.
+
+**How job matching works:**
+- Pick your university → see its key employers.
+- Browse live jobs at those employers (pulled from the Adzuna job API).
+- Filter by area of interest, or upload your resume and let AI match jobs to your
+  actual skills.
+- "Apply" takes you to the original job posting.
+
+**Being honest about the data:**
+- **✅ Curated universities** (Charles Darwin, Tasmania, James Cook, Charles Sturt,
+  University of New England, CQUniversity, Federation): these show employer lists
+  compiled from public, regional employment sources — a genuine reflection of where
+  graduates commonly work.
+- **Other universities:** these show the *largest graduate employers in the state*,
+  which is a useful starting point but **not** a verified alumni list for that
+  specific university. We label this clearly so you know what you're seeing.
+- We do **not** scrape LinkedIn or any site's private data. Job listings come from a
+  proper job API; employer lists are curated from public information.
+- **Resume privacy:** if you upload a resume, its text is sent to Google's Gemini
+  (free tier) to identify your skills. Don't upload anything you're not comfortable
+  sharing with a third-party AI service.
+
+*A student project · QS rankings from QS World University Rankings 2026.*
+""")
+
+
 # ── SIDEBAR ─────────────────────────────────────────────────────────────────--
 with st.sidebar:
     st.markdown("### 🎓 Search")
