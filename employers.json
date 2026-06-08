@@ -1,0 +1,3073 @@
+{
+  "_README": "WhereGradsGo dataset. QS column = QS World University Rankings 2026 (released June 2025). 'qs' is null where the institution is not QS-ranked. Only CDU has a full curated employer list so far; other universities have an empty 'employers' list to be filled in over time. 'region' feeds the Adzuna 'where' parameter. Employer data is compiled from PUBLIC sources, never scraped from LinkedIn.",
+  "universities": [
+    {
+      "id": "cdu",
+      "name": "Charles Darwin University",
+      "city": "Darwin",
+      "state": "NT",
+      "region": "Northern Territory",
+      "qs": 584,
+      "employers": [
+        {
+          "name": "Northern Territory Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Charles Darwin University",
+          "sector": "Education"
+        },
+        {
+          "name": "NT Department of Education and Training",
+          "sector": "Education"
+        },
+        {
+          "name": "Power and Water Corporation",
+          "sector": "Utilities"
+        },
+        {
+          "name": "NT Department of Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Royal Darwin Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Territory Families Housing and Communities",
+          "sector": "Community"
+        },
+        {
+          "name": "City of Darwin",
+          "sector": "Local Government"
+        },
+        {
+          "name": "Menzies School of Health Research",
+          "sector": "Research"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "unimelb",
+      "name": "University of Melbourne",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 19,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Melbourne",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "unsw",
+      "name": "UNSW Sydney",
+      "city": "Sydney",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 20,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "UNSW Sydney",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "usyd",
+      "name": "University of Sydney",
+      "city": "Sydney",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 25,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Sydney",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "anu",
+      "name": "Australian National University",
+      "city": "Canberra",
+      "state": "ACT",
+      "region": "Australian Capital Territory",
+      "qs": 32,
+      "employers": [
+        {
+          "name": "Australian Public Service",
+          "sector": "Government"
+        },
+        {
+          "name": "ACT Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Australian National University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Canberra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "monash",
+      "name": "Monash University",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 36,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "uq",
+      "name": "University of Queensland",
+      "city": "Brisbane",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 42,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Queensland",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Brisbane and Women's Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Princess Alexandra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "uwa",
+      "name": "University of Western Australia",
+      "city": "Perth",
+      "state": "WA",
+      "region": "Western Australia",
+      "qs": 77,
+      "employers": [
+        {
+          "name": "Government of Western Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "WA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Western Australia",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Perth Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Fiona Stanley Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Rio Tinto",
+          "sector": "Resources"
+        },
+        {
+          "name": "Woodside Energy",
+          "sector": "Energy"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "adelaide",
+      "name": "University of Adelaide",
+      "city": "Adelaide",
+      "state": "SA",
+      "region": "South Australia",
+      "qs": 82,
+      "employers": [
+        {
+          "name": "Government of South Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "SA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Adelaide",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Adelaide Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Flinders Medical Centre",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Australian Submarine Corporation",
+          "sector": "Defence"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "uts",
+      "name": "University of Technology Sydney",
+      "city": "Sydney",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 96,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Technology Sydney",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "rmit",
+      "name": "RMIT University",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 125,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "RMIT University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "macquarie",
+      "name": "Macquarie University",
+      "city": "Sydney",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 130,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Macquarie University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "curtin",
+      "name": "Curtin University",
+      "city": "Perth",
+      "state": "WA",
+      "region": "Western Australia",
+      "qs": 180,
+      "employers": [
+        {
+          "name": "Government of Western Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "WA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Curtin University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Perth Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Fiona Stanley Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Rio Tinto",
+          "sector": "Resources"
+        },
+        {
+          "name": "Woodside Energy",
+          "sector": "Energy"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "uow",
+      "name": "University of Wollongong",
+      "city": "Wollongong",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 197,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Wollongong",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "deakin",
+      "name": "Deakin University",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 197,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Deakin University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "qut",
+      "name": "Queensland University of Technology",
+      "city": "Brisbane",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 213,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Queensland University of Technology",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Brisbane and Women's Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Princess Alexandra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "newcastle",
+      "name": "University of Newcastle",
+      "city": "Newcastle",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 245,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Newcastle",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "latrobe",
+      "name": "La Trobe University",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 250,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "La Trobe University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "griffith",
+      "name": "Griffith University",
+      "city": "Brisbane",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 251,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Griffith University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Brisbane and Women's Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Princess Alexandra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "unisa",
+      "name": "University of South Australia",
+      "city": "Adelaide",
+      "state": "SA",
+      "region": "South Australia",
+      "qs": 309,
+      "employers": [
+        {
+          "name": "Government of South Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "SA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of South Australia",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Adelaide Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Flinders Medical Centre",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Australian Submarine Corporation",
+          "sector": "Defence"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "flinders",
+      "name": "Flinders University",
+      "city": "Adelaide",
+      "state": "SA",
+      "region": "South Australia",
+      "qs": 380,
+      "employers": [
+        {
+          "name": "Government of South Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "SA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Flinders University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Adelaide Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Flinders Medical Centre",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Australian Submarine Corporation",
+          "sector": "Defence"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "tas",
+      "name": "University of Tasmania",
+      "city": "Hobart",
+      "state": "TAS",
+      "region": "Tasmania",
+      "qs": 401,
+      "employers": [
+        {
+          "name": "Tasmanian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "University of Tasmania",
+          "sector": "Education"
+        },
+        {
+          "name": "Department of Health Tasmania",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Royal Hobart Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Launceston General Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Department for Education Children and Young People",
+          "sector": "Education"
+        },
+        {
+          "name": "Hydro Tasmania",
+          "sector": "Utilities"
+        },
+        {
+          "name": "City of Hobart",
+          "sector": "Local Government"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "jcu",
+      "name": "James Cook University",
+      "city": "Townsville",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 415,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "James Cook University",
+          "sector": "Education"
+        },
+        {
+          "name": "Townsville Hospital and Health Service",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Cairns and Hinterland Hospital and Health Service",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Department of Education Queensland",
+          "sector": "Education"
+        },
+        {
+          "name": "Townsville City Council",
+          "sector": "Local Government"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "bond",
+      "name": "Bond University",
+      "city": "Gold Coast",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 435,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Bond University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Brisbane and Women's Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Princess Alexandra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "swinburne",
+      "name": "Swinburne University of Technology",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 466,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Swinburne University of Technology",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "westernsydney",
+      "name": "Western Sydney University",
+      "city": "Sydney",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 481,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Western Sydney University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "ecu",
+      "name": "Edith Cowan University",
+      "city": "Perth",
+      "state": "WA",
+      "region": "Western Australia",
+      "qs": 541,
+      "employers": [
+        {
+          "name": "Government of Western Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "WA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Edith Cowan University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Perth Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Fiona Stanley Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Rio Tinto",
+          "sector": "Resources"
+        },
+        {
+          "name": "Woodside Energy",
+          "sector": "Energy"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "charlessturt",
+      "name": "Charles Sturt University",
+      "city": "Bathurst",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 581,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Charles Sturt University",
+          "sector": "Education"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Western NSW Local Health District",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "NSW Department of Education",
+          "sector": "Education"
+        },
+        {
+          "name": "NSW Police Force",
+          "sector": "Government"
+        },
+        {
+          "name": "Murrumbidgee Local Health District",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "canberra",
+      "name": "University of Canberra",
+      "city": "Canberra",
+      "state": "ACT",
+      "region": "Australian Capital Territory",
+      "qs": 568,
+      "employers": [
+        {
+          "name": "Australian Public Service",
+          "sector": "Government"
+        },
+        {
+          "name": "ACT Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Canberra",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Canberra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "murdoch",
+      "name": "Murdoch University",
+      "city": "Perth",
+      "state": "WA",
+      "region": "Western Australia",
+      "qs": 595,
+      "employers": [
+        {
+          "name": "Government of Western Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "WA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Murdoch University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Perth Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Fiona Stanley Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Rio Tinto",
+          "sector": "Resources"
+        },
+        {
+          "name": "Woodside Energy",
+          "sector": "Energy"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "acu",
+      "name": "Australian Catholic University",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 621,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Australian Catholic University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "usq",
+      "name": "University of Southern Queensland",
+      "city": "Toowoomba",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 651,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Southern Queensland",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Brisbane and Women's Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Princess Alexandra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "vu",
+      "name": "Victoria University",
+      "city": "Melbourne",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 711,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Department of Health Victoria",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Victoria University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Melbourne Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Monash Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Medibank",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "scu",
+      "name": "Southern Cross University",
+      "city": "Lismore",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 751,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Southern Cross University",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Prince Alfred Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Westmead Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Atlassian",
+          "sector": "Technology"
+        },
+        {
+          "name": "Canva",
+          "sector": "Technology"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "une",
+      "name": "University of New England",
+      "city": "Armidale",
+      "state": "NSW",
+      "region": "New South Wales",
+      "qs": 751,
+      "employers": [
+        {
+          "name": "NSW Government",
+          "sector": "Government"
+        },
+        {
+          "name": "University of New England",
+          "sector": "Education"
+        },
+        {
+          "name": "Hunter New England Local Health District",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "NSW Department of Education",
+          "sector": "Education"
+        },
+        {
+          "name": "NSW Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Armidale Regional Council",
+          "sector": "Local Government"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "cqu",
+      "name": "CQUniversity",
+      "city": "Rockhampton",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": 801,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "CQUniversity",
+          "sector": "Education"
+        },
+        {
+          "name": "Central Queensland Hospital and Health Service",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Department of Education Queensland",
+          "sector": "Education"
+        },
+        {
+          "name": "Rockhampton Regional Council",
+          "sector": "Local Government"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "federation",
+      "name": "Federation University Australia",
+      "city": "Ballarat",
+      "state": "VIC",
+      "region": "Victoria",
+      "qs": 801,
+      "employers": [
+        {
+          "name": "Victorian Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Federation University Australia",
+          "sector": "Education"
+        },
+        {
+          "name": "Ballarat Health Services",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Grampians Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Department of Education Victoria",
+          "sector": "Education"
+        },
+        {
+          "name": "City of Ballarat",
+          "sector": "Local Government"
+        }
+      ],
+      "mode": "alumni"
+    },
+    {
+      "id": "usc",
+      "name": "University of the Sunshine Coast",
+      "city": "Sunshine Coast",
+      "state": "QLD",
+      "region": "Queensland",
+      "qs": null,
+      "employers": [
+        {
+          "name": "Queensland Government",
+          "sector": "Government"
+        },
+        {
+          "name": "Queensland Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of the Sunshine Coast",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Brisbane and Women's Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Princess Alexandra Hospital",
+          "sector": "Healthcare"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "notredame",
+      "name": "University of Notre Dame Australia",
+      "city": "Fremantle",
+      "state": "WA",
+      "region": "Western Australia",
+      "qs": null,
+      "employers": [
+        {
+          "name": "Government of Western Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "WA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "University of Notre Dame Australia",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Perth Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Fiona Stanley Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Rio Tinto",
+          "sector": "Resources"
+        },
+        {
+          "name": "Woodside Energy",
+          "sector": "Energy"
+        }
+      ],
+      "mode": "metro"
+    },
+    {
+      "id": "torrens",
+      "name": "Torrens University Australia",
+      "city": "Adelaide",
+      "state": "SA",
+      "region": "South Australia",
+      "qs": null,
+      "employers": [
+        {
+          "name": "Government of South Australia",
+          "sector": "Government"
+        },
+        {
+          "name": "SA Health",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Torrens University Australia",
+          "sector": "Education"
+        },
+        {
+          "name": null,
+          "sector": "Education"
+        },
+        {
+          "name": "Commonwealth Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "ANZ",
+          "sector": "Finance"
+        },
+        {
+          "name": "Westpac",
+          "sector": "Finance"
+        },
+        {
+          "name": "National Australia Bank",
+          "sector": "Finance"
+        },
+        {
+          "name": "Deloitte",
+          "sector": "Consulting"
+        },
+        {
+          "name": "KPMG",
+          "sector": "Consulting"
+        },
+        {
+          "name": "PwC",
+          "sector": "Consulting"
+        },
+        {
+          "name": "Woolworths Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Coles Group",
+          "sector": "Retail"
+        },
+        {
+          "name": "Telstra",
+          "sector": "Technology"
+        },
+        {
+          "name": "Department of Defence",
+          "sector": "Defence"
+        },
+        {
+          "name": "Royal Adelaide Hospital",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "Flinders Medical Centre",
+          "sector": "Healthcare"
+        },
+        {
+          "name": "BHP",
+          "sector": "Resources"
+        },
+        {
+          "name": "Australian Submarine Corporation",
+          "sector": "Defence"
+        }
+      ],
+      "mode": "metro"
+    }
+  ]
+}
