@@ -153,7 +153,7 @@ def fetch_jobs(employer_name, region, max_results=30):
 
 # ── PAGE CONFIG ─────────────────────────────────────────────────────────────--
 st.set_page_config(page_title="WhereGradsGo", page_icon="🎓",
-                   layout="wide", initial_sidebar_state="expanded")
+                   layout="centered", initial_sidebar_state="collapsed")
 
 # ── CUSTOM STYLING ────────────────────────────────────────────────────────────
 st.markdown("""
@@ -334,48 +334,18 @@ ul[role="listbox"] li[aria-selected="true"] *,
 }
 [data-testid="stExpander"] * { color: var(--ink) !important; }
 
-/* ---- DESKTOP: lock the sidebar open (controls are mandatory) ---- */
-@media (min-width: 769px) {
-  /* hide the collapse arrow so the sidebar can't be hidden on desktop */
-  [data-testid="stSidebarCollapseButton"],
-  [data-testid="stSidebarCollapsedControl"],
-  [data-testid="collapsedControl"],
-  [data-testid="baseButton-headerNoPadding"] {
-    display: none !important;
-  }
-  [data-testid="stSidebar"] {
-    display: block !important;
-    visibility: visible !important;
-    transform: none !important;
-    min-width: 300px !important;
-    width: 300px !important;
-    margin-left: 0 !important;
-  }
-  [data-testid="stSidebar"][aria-expanded="false"] {
-    transform: none !important;
-    margin-left: 0 !important;
-  }
-}
+/* ---- No sidebar: controls are in the main page now (mobile-safe) ---- */
+[data-testid="stSidebar"] { display: none !important; }
+[data-testid="stSidebarCollapsedControl"], [data-testid="collapsedControl"] { display: none !important; }
 
-/* ---- MOBILE: let the sidebar collapse so content has room ---- */
+/* ---- MOBILE sizing tweaks ---- */
 @media (max-width: 768px) {
-  /* keep the expand arrow visible and tappable so users can reopen it */
-  [data-testid="stSidebarCollapsedControl"],
-  [data-testid="collapsedControl"] {
-    display: block !important; visibility: visible !important; opacity: 1 !important;
-    color: var(--ink) !important;
-  }
-  /* shrink the big hero so it fits a phone */
   .hero h1 { font-size: 30px !important; }
   .hero .sub { font-size: 13px !important; }
-  /* tighten page padding on small screens */
   .block-container { padding: 1rem 0.6rem !important; max-width: 100% !important; }
-  /* university banner stacks nicely */
   .uni-banner { padding: 16px 18px !important; }
   .uni-banner .uni-name { font-size: 20px !important; }
   .job-title { font-size: 17px !important; }
-  /* full-width sidebar overlay when opened on mobile */
-  [data-testid="stSidebar"] { min-width: 80vw !important; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -451,38 +421,29 @@ then shows live job openings there.
 """)
 
 
-# ── SIDEBAR ─────────────────────────────────────────────────────────────────--
-with st.sidebar:
-    st.markdown("### 🎓 Search")
+# ── CONTROLS (main page — always visible, mobile-safe) ───────────────────────--
+st.markdown('<div class="section-label">🎓 Find your university</div>', unsafe_allow_html=True)
+c1, c2 = st.columns([1, 1])
+with c1:
     labels = [uni_label(u) for u in universities_sorted]
     idx = st.selectbox("University", range(len(labels)),
-                       format_func=lambda i: labels[i])
+                       format_func=lambda i: labels[i], label_visibility="collapsed")
     uni = universities_sorted[idx]
 
-    mode = uni.get("mode", "")
-    has_employers = len(uni["employers"]) > 0
+mode = uni.get("mode", "")
+has_employers = len(uni["employers"]) > 0
+with c2:
     if has_employers:
         emp_label = "Employer" if mode == "alumni" else "Major employer"
         employer_options = ["All employers"] + [e["name"] for e in uni["employers"]]
-        chosen_employer = st.selectbox(emp_label, employer_options)
+        chosen_employer = st.selectbox(emp_label, employer_options, label_visibility="collapsed")
     else:
         chosen_employer = None
+        st.write("")
 
-    st.markdown("---")
-    st.markdown(f"**Region:** {uni['region']}")
-    st.markdown(f"**Employers on file:** {len(uni['employers'])}")
-    if mode == "alumni":
-        st.caption("✅ Curated list of where this university's graduates commonly work, "
-                   "compiled from public sources.")
-    elif mode == "metro":
-        st.caption("ℹ️ This shows the largest graduate employers in the state "
-                   "(not a verified alumni list). Curated alumni lists exist for "
-                   "regional universities — look for ✅ ones.")
-
-    # ── Resume upload (AI-powered) ──
-    st.markdown("---")
-    st.markdown("### 📄 Smart match")
-    resume_cats = []
+# ── Resume upload (AI-powered) ──
+resume_cats = []
+with st.expander("📄 Smart match — upload your resume to match jobs to your skills"):
     if PYPDF_OK and GENAI_OK and GEMINI_KEY:
         resume_file = st.file_uploader(
             "Upload your resume (PDF). AI reads your skills and matches jobs.",
@@ -497,12 +458,10 @@ with st.sidebar:
                            + (f" +{len(resume_cats)-1} more" if len(resume_cats) > 1 else ""))
                 if result.get("summary"):
                     st.caption(f"💡 {result['summary']}")
-                with st.expander("All matched areas"):
-                    for c in resume_cats:
-                        st.markdown(f"• {c}")
+                st.markdown("**All matched areas:** " + " · ".join(resume_cats))
             elif result["ok"]:
                 st.warning("AI couldn't confidently match your resume. "
-                           "Showing all jobs — use the filter above.")
+                           "Showing all jobs — use the filter below.")
             else:
                 st.error(result.get("error", "Something went wrong."))
         st.caption("⚠️ Resumes are analysed by Google's free-tier AI.")
