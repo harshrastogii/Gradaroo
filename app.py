@@ -334,26 +334,48 @@ ul[role="listbox"] li[aria-selected="true"] *,
 }
 [data-testid="stExpander"] * { color: var(--ink) !important; }
 
-/* ---- LOCK the sidebar permanently open (controls are mandatory) ---- */
-/* hide the collapse arrow entirely so it can never be hidden */
-[data-testid="stSidebarCollapseButton"],
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-[data-testid="baseButton-headerNoPadding"] {
-  display: none !important;
+/* ---- DESKTOP: lock the sidebar open (controls are mandatory) ---- */
+@media (min-width: 769px) {
+  /* hide the collapse arrow so the sidebar can't be hidden on desktop */
+  [data-testid="stSidebarCollapseButton"],
+  [data-testid="stSidebarCollapsedControl"],
+  [data-testid="collapsedControl"],
+  [data-testid="baseButton-headerNoPadding"] {
+    display: none !important;
+  }
+  [data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    transform: none !important;
+    min-width: 300px !important;
+    width: 300px !important;
+    margin-left: 0 !important;
+  }
+  [data-testid="stSidebar"][aria-expanded="false"] {
+    transform: none !important;
+    margin-left: 0 !important;
+  }
 }
-/* force the sidebar to stay visible and at full width */
-[data-testid="stSidebar"] {
-  display: block !important;
-  visibility: visible !important;
-  transform: none !important;
-  min-width: 300px !important;
-  width: 300px !important;
-  margin-left: 0 !important;
-}
-[data-testid="stSidebar"][aria-expanded="false"] {
-  transform: none !important;
-  margin-left: 0 !important;
+
+/* ---- MOBILE: let the sidebar collapse so content has room ---- */
+@media (max-width: 768px) {
+  /* keep the expand arrow visible and tappable so users can reopen it */
+  [data-testid="stSidebarCollapsedControl"],
+  [data-testid="collapsedControl"] {
+    display: block !important; visibility: visible !important; opacity: 1 !important;
+    color: var(--ink) !important;
+  }
+  /* shrink the big hero so it fits a phone */
+  .hero h1 { font-size: 30px !important; }
+  .hero .sub { font-size: 13px !important; }
+  /* tighten page padding on small screens */
+  .block-container { padding: 1rem 0.6rem !important; max-width: 100% !important; }
+  /* university banner stacks nicely */
+  .uni-banner { padding: 16px 18px !important; }
+  .uni-banner .uni-name { font-size: 20px !important; }
+  .job-title { font-size: 17px !important; }
+  /* full-width sidebar overlay when opened on mobile */
+  [data-testid="stSidebar"] { min-width: 80vw !important; }
 }
 </style>
 """, unsafe_allow_html=True)
