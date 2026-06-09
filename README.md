@@ -82,4 +82,4 @@ WhereGradsGo/
 
 ## About
 
-Built as a project exploring a smarter, ethical approach to graduate job search. QS rankings from the QS World University Rankings 2026.
+Built by Harsh Rastogi as a project exploring a smarter, ethical approach to graduate job search. QS rankings from the QS World University Rankings 2026.
