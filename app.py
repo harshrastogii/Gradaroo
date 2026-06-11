@@ -125,17 +125,27 @@ def load_universities():
 
 @st.cache_data(ttl=3600)
 def fetch_jobs(employer_name, region, max_results=30):
+    # skip blank/None employer names entirely
+    if not employer_name:
+        return []
     params = {
         "app_id": APP_ID, "app_key": APP_KEY,
         "results_per_page": max_results, "what": employer_name, "where": region,
     }
-    try:
-        r = requests.get(ADZUNA_URL, params=params, timeout=30)
-        r.raise_for_status()
-        raw = r.json().get("results", [])
-    except Exception as e:
-        st.error(f"Couldn't fetch jobs for {employer_name}: {e}")
-        return []
+    import time
+    raw = []
+    for attempt in range(3):
+        try:
+            r = requests.get(ADZUNA_URL, params=params, timeout=30)
+            r.raise_for_status()
+            raw = r.json().get("results", [])
+            break
+        except Exception as e:
+            # transient server errors -> wait and retry; otherwise give up quietly
+            if "503" in str(e) or "502" in str(e) or "Temporarily" in str(e):
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            return []
     jobs = []
     for j in raw:
         jobs.append({
@@ -513,6 +523,11 @@ for j in all_jobs:
     if j["url"] and j["url"] not in seen:
         seen.add(j["url"]); jobs.append(j)
 
+# If we got absolutely nothing back, the job service is likely down right now.
+if not jobs:
+    st.warning("⚠️ The job service (Adzuna) didn't return any results just now — "
+               "it may be temporarily busy. Please refresh in a moment.")
+
 
 # ── INTEREST FILTER ───────────────────────────────────────────────────────────
 cat_counts = {}
@@ -549,7 +564,7 @@ st.write("")
 
 if not visible:
     st.info("No jobs match this filter right now. Try removing the interest filter, "
-            "or choose **All employers** in the sidebar.")
+            "or choose **All employers** above.")
 else:
     for j in visible:
         col1, col2 = st.columns([5, 1])
