@@ -110,6 +110,7 @@ APP_ID = get_secret("ADZUNA_APP_ID", "")
 APP_KEY = get_secret("ADZUNA_APP_KEY", "")
 GEMINI_KEY = get_secret("GEMINI_API_KEY", "")
 ADZUNA_URL = "https://api.adzuna.com/v1/api/jobs/au/search/1"
+KOFI_URL = "https://ko-fi.com/harshrastogi"
 
 # Adzuna keys are required for the core job search.
 def _keys_missing():
@@ -229,6 +230,8 @@ def render_growth_panel(matched_cats, max_cards=3):
     shareable certificate, which helps prove the skill to employers — pick whatever
     fits your budget. These are plain links; we earn nothing from them.</div>
   <div class="grow-grid">{''.join(cards)}</div>
+  <div class="grow-support">WhereGradsGo is free and earns nothing from these links.
+    If it helped you, you can <a href="{KOFI_URL}" target="_blank" rel="noopener">buy me a coffee on Ko-fi ☕</a></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -297,21 +300,41 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   color: var(--ink);
 }
 
-/* ---- HERO ---- */
-.hero { padding: 6px 0 2px; border-bottom: 1.5px solid var(--ink); margin-bottom: 4px; }
-.hero h1 {
-  font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 40px;
-  line-height: 1.0; letter-spacing: -0.02em; margin: 0; color: var(--ink);
+/* ---- MASTHEAD (newspaper-style hero) ---- */
+.masthead { text-align: center; padding: 4px 0 0; margin-bottom: 6px; }
+.masthead .dateline {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px;
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line);
+  padding: 7px 0; margin-bottom: 22px;
 }
-.hero h1 .go { color: var(--accent); font-style: italic; }
-.hero .sub {
-  font-size: 14px; color: var(--muted); margin-top: 8px; font-weight: 400;
+.masthead .dateline .dl-dot { color: var(--accent); }
+.masthead h1 {
+  font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 58px;
+  line-height: 1.0; letter-spacing: -0.025em; margin: 0; color: var(--ink);
+}
+.masthead h1 .go { color: var(--accent); font-style: italic; }
+.masthead .sub {
+  font-family: 'Newsreader', Georgia, serif; font-style: italic;
+  font-size: 16px; color: var(--muted); margin-top: 10px; font-weight: 400;
+}
+.masthead .rule-thick { height: 3px; background: var(--ink); margin-top: 20px; }
+.masthead .rule-thin { height: 1px; background: var(--ink); margin-top: 3px; }
+.masthead .howline {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; padding: 9px 0 0;
+}
+.masthead .howline .step-n {
+  font-family: 'Newsreader', serif; font-style: italic; font-weight: 600;
+  color: var(--accent); text-transform: none; letter-spacing: 0; font-size: 13px;
 }
 
 /* ---- UNIVERSITY BANNER ---- */
 .uni-banner {
-  background: var(--ink); border-radius: 14px;
-  padding: 20px 24px; margin: 16px 0 6px;
+  background: linear-gradient(135deg, #1d1d1f 0%, #2b2118 100%);
+  border-radius: 16px; border-bottom: 3px solid var(--accent);
+  padding: 22px 26px; margin: 16px 0 6px;
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
 }
 .uni-banner .uni-name {
@@ -328,10 +351,11 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 /* ---- JOB CARD ---- */
 .job-card {
   background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  border-left: 3px solid var(--line);
   padding: 18px 20px; margin-bottom: 12px; transition: all .16s ease;
 }
-.job-card:hover { border-color: var(--accent); transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(179,67,26,.10); }
+.job-card:hover { border-color: var(--line); border-left-color: var(--accent);
+  transform: translateY(-2px); box-shadow: 0 10px 28px rgba(29,29,31,.09); }
 .job-title { font-family: 'Newsreader', serif; font-size: 20px; font-weight: 600;
   line-height: 1.25; margin: 0 0 3px; color: var(--ink); }
 .job-employer { font-weight: 600; font-size: 13.5px; color: var(--accent); margin-bottom: 9px; }
@@ -343,15 +367,17 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 
 /* ---- SECTION LABELS ---- */
 .section-label {
+  display: flex; align-items: center; gap: 12px;
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
-  color: var(--muted); font-weight: 700; margin: 14px 0 4px;
+  color: var(--muted); font-weight: 700; margin: 16px 0 6px;
 }
+.section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .count-big { font-family: 'Newsreader', serif; font-size: 32px; font-weight: 600; color: var(--ink); }
 
 /* ---- LINK BUTTON ---- */
 .stLinkButton a {
   background: var(--ink) !important; color: #ffffff !important;
-  border: none !important; border-radius: 8px !important; font-weight: 600 !important;
+  border: none !important; border-radius: 999px !important; font-weight: 600 !important;
 }
 .stLinkButton a:hover { background: var(--accent) !important; color:#fff !important; }
 .stLinkButton a p { color:#ffffff !important; }
@@ -494,14 +520,50 @@ ul[role="listbox"] li[aria-selected="true"] *,
 .tag-paid { background: var(--accent-soft); color: var(--accent); }
 .course-ext { flex-shrink: 0; color: var(--muted); font-size: 13px; }
 
+/* ---- KO-FI + SUPPORT ---- */
+.kofi-btn {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  background: var(--ink); color: #ffffff !important; text-decoration: none !important;
+  border-radius: 999px; padding: 8px 18px; font-size: 13px; font-weight: 600;
+  transition: all .16s ease;
+}
+.kofi-btn:hover { background: var(--accent); transform: translateY(-1px); }
+.grow-support { font-size: 12px; color: var(--muted); margin-top: 14px;
+  padding-top: 12px; border-top: 1px dashed var(--line); }
+.grow-support a { color: var(--accent) !important; font-weight: 600; text-decoration: none; }
+.grow-support a:hover { text-decoration: underline; }
+
+/* ---- SITE FOOTER (editorial colophon) ---- */
+.site-footer { margin-top: 28px; }
+.site-footer .rule-thin { height: 1px; background: var(--ink); }
+.site-footer .rule-thick { height: 3px; background: var(--ink); margin-top: 3px; }
+.site-footer .footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 14px; padding: 18px 0 6px;
+}
+.site-footer .footer-credits { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 620px; }
+.site-footer .footer-note {
+  font-family: 'Newsreader', serif; font-style: italic;
+  font-size: 12.5px; color: var(--muted); padding: 4px 0 14px;
+}
+
+/* ---- ACCESSIBILITY: respect reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  .job-card:hover, .course-row:hover, .kofi-btn:hover { transform: none !important; }
+}
+
 /* ---- MOBILE sizing tweaks ---- */
 @media (max-width: 768px) {
-  .hero h1 { font-size: 30px !important; }
-  .hero .sub { font-size: 13px !important; }
+  .masthead h1 { font-size: 36px !important; }
+  .masthead .sub { font-size: 14px !important; }
+  .masthead .dateline { font-size: 9.5px !important; gap: 4px 10px !important; }
+  .masthead .howline { font-size: 10px !important; }
   .block-container { padding: 1rem 0.6rem !important; max-width: 100% !important; }
   .uni-banner { padding: 16px 18px !important; }
   .uni-banner .uni-name { font-size: 20px !important; }
   .job-title { font-size: 17px !important; }
+  .site-footer .footer-row { flex-direction: column; align-items: flex-start; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -526,11 +588,26 @@ def sort_key(u):
 universities_sorted = sorted(universities, key=sort_key)
 
 
-# ── HERO ────────────────────────────────────────────────────────────────────--
-st.markdown("""
-<div class="hero">
+# ── MASTHEAD ──────────────────────────────────────────────────────────────────
+n_unis = len(universities_sorted)
+n_emps = sum(len(u.get("employers", [])) for u in universities_sorted)
+st.markdown(f"""
+<div class="masthead">
+  <div class="dateline">
+    <span>Australia</span><span class="dl-dot">●</span>
+    <span>{n_unis} universities</span><span class="dl-dot">●</span>
+    <span>{n_emps} employers</span><span class="dl-dot">●</span>
+    <span>Live listings via Adzuna</span>
+  </div>
   <h1>WhereGrads<span class="go">Go</span></h1>
   <div class="sub">Find live jobs at the organisations your university's graduates actually work for.</div>
+  <div class="rule-thick"></div>
+  <div class="rule-thin"></div>
+  <div class="howline">
+    <span class="step-n">i.</span> Pick your university &nbsp;
+    <span class="step-n">ii.</span> See where its grads work &nbsp;
+    <span class="step-n">iii.</span> Apply to live openings
+  </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -733,6 +810,16 @@ if growth_source:
     st.write("")
     render_growth_panel(growth_source)
 
-st.markdown("---")
-st.caption("Employer data compiled from public sources · Job listings via the Adzuna API · "
-           "QS World University Rankings 2026 · 'Apply' opens the original posting.")
+st.markdown(f"""
+<div class="site-footer">
+  <div class="rule-thin"></div>
+  <div class="rule-thick"></div>
+  <div class="footer-row">
+    <div class="footer-credits">Employer data compiled from public sources ·
+      Job listings via the Adzuna API · QS World University Rankings 2026 ·
+      “Apply” opens the original posting.</div>
+    <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
+  </div>
+  <div class="footer-note">Built by Harsh Rastogi — a smarter, honest way to start a graduate job search.</div>
+</div>
+""", unsafe_allow_html=True)
