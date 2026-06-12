@@ -116,6 +116,123 @@ def _keys_missing():
     return not APP_ID or not APP_KEY
 
 
+# ── COURSE CATALOG ────────────────────────────────────────────────────────────
+# Keyed to Adzuna's exact category strings so it plugs straight into resume
+# matches and the interest filter. Plain links for now — swap to affiliate links
+# once programs approve. Free options are genuinely free; we earn nothing.
+COURSE_CATALOG = {
+    "IT Jobs": {
+        "free": [("freeCodeCamp — full coding & data curriculum", "https://www.freecodecamp.org/learn"),
+                 ("Kaggle Learn — hands-on data science", "https://www.kaggle.com/learn")],
+        "paid": [("Google Data Analytics Certificate (Coursera)", "https://www.coursera.org/professional-certificates/google-data-analytics"),
+                 ("Python courses (Udemy)", "https://www.udemy.com/topic/python/")],
+    },
+    "PR, Advertising & Marketing Jobs": {
+        "free": [("HubSpot Academy — free marketing certs", "https://academy.hubspot.com/courses"),
+                 ("Google Skillshop — Ads & Analytics", "https://skillshop.withgoogle.com/")],
+        "paid": [("Google Digital Marketing Certificate (Coursera)", "https://www.coursera.org/professional-certificates/google-digital-marketing-ecommerce"),
+                 ("Digital marketing courses (Udemy)", "https://www.udemy.com/topic/digital-marketing/")],
+    },
+    "Accounting & Finance Jobs": {
+        "free": [("Khan Academy — finance & economics", "https://www.khanacademy.org/economics-finance-domain"),
+                 ("Xero training (widely used in AU)", "https://www.xero.com/au/training/")],
+        "paid": [("Finance courses (Coursera)", "https://www.coursera.org/browse/business/finance"),
+                 ("Accounting courses (Udemy)", "https://www.udemy.com/topic/accounting/")],
+    },
+    "Admin Jobs": {
+        "free": [("Microsoft Learn — Office & productivity", "https://learn.microsoft.com/training/")],
+        "paid": [("Excel courses (Udemy)", "https://www.udemy.com/topic/excel/")],
+    },
+    "Engineering Jobs": {
+        "free": [("MIT OpenCourseWare — engineering", "https://ocw.mit.edu/")],
+        "paid": [("AutoCAD courses (Udemy)", "https://www.udemy.com/topic/autocad/")],
+    },
+    "Healthcare & Nursing Jobs": {
+        "free": [("FutureLearn — healthcare courses", "https://www.futurelearn.com/subjects/healthcare-medicine-courses")],
+        "paid": [("Health courses (Coursera)", "https://www.coursera.org/browse/health")],
+    },
+    "Teaching Jobs": {
+        "free": [("FutureLearn — teaching courses", "https://www.futurelearn.com/subjects/teaching-courses")],
+        "paid": [("Education courses (Coursera)", "https://www.coursera.org/browse/social-sciences/education")],
+    },
+    "Sales Jobs": {
+        "free": [("HubSpot Academy — free sales training", "https://academy.hubspot.com/courses?topic=sales")],
+        "paid": [("Sales courses (Udemy)", "https://www.udemy.com/topic/sales-skills/")],
+    },
+    "Customer Services Jobs": {
+        "free": [("HubSpot Academy — service training", "https://academy.hubspot.com/courses?topic=service")],
+        "paid": [("Customer service courses (Udemy)", "https://www.udemy.com/topic/customer-service/")],
+    },
+    "Creative & Design Jobs": {
+        "free": [("Canva Design School", "https://www.canva.com/designschool/")],
+        "paid": [("Design courses (Skillshare)", "https://www.skillshare.com/en/browse/design")],
+    },
+}
+
+# Tabler-style emoji icon per category (kept simple — no external font needed).
+CATEGORY_ICONS = {
+    "IT Jobs": "💻",
+    "PR, Advertising & Marketing Jobs": "📣",
+    "Accounting & Finance Jobs": "🧮",
+    "Admin Jobs": "🗂️",
+    "Engineering Jobs": "🛠️",
+    "Healthcare & Nursing Jobs": "🩺",
+    "Teaching Jobs": "🏫",
+    "Sales Jobs": "📈",
+    "Customer Services Jobs": "🎧",
+    "Creative & Design Jobs": "🎨",
+}
+
+
+def render_growth_panel(matched_cats, max_cards=3):
+    """Render a 'Grow your skills' panel for the matched categories.
+
+    matched_cats: ordered list of Adzuna category strings (resume match first,
+    else the user's chosen interest filters). Only categories we have curated
+    learning options for are shown, capped at max_cards.
+    """
+    shown = [c for c in matched_cats if c in COURSE_CATALOG][:max_cards]
+    if not shown:
+        return
+
+    def _row(label, url, is_free):
+        tag = "Free" if is_free else "Paid"
+        tag_cls = "tag-free" if is_free else "tag-paid"
+        return (
+            f'<a class="course-row" href="{url}" target="_blank" rel="noopener">'
+            f'<span class="course-label"><span class="course-tag {tag_cls}">{tag}</span>'
+            f'{label}</span><span class="course-ext">↗</span></a>'
+        )
+
+    cards = []
+    for cat in shown:
+        opts = COURSE_CATALOG[cat]
+        icon = CATEGORY_ICONS.get(cat, "🌱")
+        rows = "".join(_row(l, u, True) for l, u in opts.get("free", []))
+        rows += "".join(_row(l, u, False) for l, u in opts.get("paid", []))
+        # tidy the display name (drop trailing " Jobs")
+        nice = cat[:-5] if cat.endswith(" Jobs") else cat
+        cards.append(
+            f'<div class="grow-card"><div class="grow-card-head">'
+            f'<span class="grow-card-icon">{icon}</span>'
+            f'<span class="grow-card-title">{nice}</span></div>'
+            f'<div class="grow-rows">{rows}</div></div>'
+        )
+
+    st.markdown(f"""
+<div class="grow-panel">
+  <div class="grow-head">
+    <span class="grow-seed">🌱</span>
+    <span class="grow-title">Grow your skills</span>
+  </div>
+  <div class="grow-sub">Free options are genuinely free. Paid courses include a
+    shareable certificate, which helps prove the skill to employers — pick whatever
+    fits your budget. These are plain links; we earn nothing from them.</div>
+  <div class="grow-grid">{''.join(cards)}</div>
+</div>
+""", unsafe_allow_html=True)
+
+
 # ── DATA ────────────────────────────────────────────────────────────────────--
 @st.cache_data
 def load_universities():
@@ -125,27 +242,17 @@ def load_universities():
 
 @st.cache_data(ttl=3600)
 def fetch_jobs(employer_name, region, max_results=30):
-    # skip blank/None employer names entirely
-    if not employer_name:
-        return []
     params = {
         "app_id": APP_ID, "app_key": APP_KEY,
         "results_per_page": max_results, "what": employer_name, "where": region,
     }
-    import time
-    raw = []
-    for attempt in range(3):
-        try:
-            r = requests.get(ADZUNA_URL, params=params, timeout=30)
-            r.raise_for_status()
-            raw = r.json().get("results", [])
-            break
-        except Exception as e:
-            # transient server errors -> wait and retry; otherwise give up quietly
-            if "503" in str(e) or "502" in str(e) or "Temporarily" in str(e):
-                time.sleep(1.5 * (attempt + 1))
-                continue
-            return []
+    try:
+        r = requests.get(ADZUNA_URL, params=params, timeout=30)
+        r.raise_for_status()
+        raw = r.json().get("results", [])
+    except Exception as e:
+        st.error(f"Couldn't fetch jobs for {employer_name}: {e}")
+        return []
     jobs = []
     for j in raw:
         jobs.append({
@@ -348,6 +455,45 @@ ul[role="listbox"] li[aria-selected="true"] *,
 [data-testid="stSidebar"] { display: none !important; }
 [data-testid="stSidebarCollapsedControl"], [data-testid="collapsedControl"] { display: none !important; }
 
+/* ---- GROW YOUR SKILLS PANEL ---- */
+.grow-panel {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 20px 22px; margin: 8px 0 4px;
+}
+.grow-head { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
+.grow-seed { font-size: 20px; line-height: 1; }
+.grow-title {
+  font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; color: var(--ink);
+}
+.grow-sub { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-bottom: 16px; }
+.grow-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;
+}
+.grow-card {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+}
+.grow-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; }
+.grow-card-icon { font-size: 17px; line-height: 1; }
+.grow-card-title { font-weight: 700; font-size: 14px; color: var(--ink); }
+.grow-rows { display: flex; flex-direction: column; gap: 7px; }
+.course-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 11px; text-decoration: none !important; transition: all .14s ease;
+}
+.course-row:hover { border-color: var(--accent); transform: translateY(-1px); }
+.course-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--ink) !important; line-height: 1.35;
+}
+.course-tag {
+  flex-shrink: 0; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; padding: 2px 8px; border-radius: 5px;
+}
+.tag-free { background: #e3f0e4; color: #2f6b34; }
+.tag-paid { background: var(--accent-soft); color: var(--accent); }
+.course-ext { flex-shrink: 0; color: var(--muted); font-size: 13px; }
+
 /* ---- MOBILE sizing tweaks ---- */
 @media (max-width: 768px) {
   .hero h1 { font-size: 30px !important; }
@@ -523,11 +669,6 @@ for j in all_jobs:
     if j["url"] and j["url"] not in seen:
         seen.add(j["url"]); jobs.append(j)
 
-# If we got absolutely nothing back, the job service is likely down right now.
-if not jobs:
-    st.warning("⚠️ The job service (Adzuna) didn't return any results just now — "
-               "it may be temporarily busy. Please refresh in a moment.")
-
 
 # ── INTEREST FILTER ───────────────────────────────────────────────────────────
 cat_counts = {}
@@ -564,7 +705,7 @@ st.write("")
 
 if not visible:
     st.info("No jobs match this filter right now. Try removing the interest filter, "
-            "or choose **All employers** above.")
+            "or choose **All employers** in the sidebar.")
 else:
     for j in visible:
         col1, col2 = st.columns([5, 1])
@@ -583,6 +724,14 @@ else:
         with col2:
             st.write(""); st.write("")
             st.link_button("Apply ↗", j["url"], use_container_width=True)
+
+# ── GROW YOUR SKILLS ──────────────────────────────────────────────────────────
+# Drive the panel off the resume match first (most personalised), else off the
+# user's chosen interest filters. Only categories we've curated courses for show.
+growth_source = resume_cats if resume_cats else chosen_cats
+if growth_source:
+    st.write("")
+    render_growth_panel(growth_source)
 
 st.markdown("---")
 st.caption("Employer data compiled from public sources · Job listings via the Adzuna API · "
