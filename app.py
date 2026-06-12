@@ -281,13 +281,17 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap');
 
 :root {
-  --ink: #1d1d1f;
-  --paper: #f6f3ee;
+  --ink: #1c1917;
+  --paper: #faf6f0;
   --card: #ffffff;
-  --accent: #b3431a;
-  --accent-soft: #f7e7df;
-  --line: #e4ddd2;
-  --muted: #6b6358;
+  --accent: #bc4514;
+  --accent-2: #e8742c;
+  --grad: linear-gradient(135deg, #bc4514 0%, #e8742c 100%);
+  --accent-soft: #f9ece2;
+  --line: #ece3d6;
+  --muted: #756c5f;
+  --shadow-sm: 0 1px 2px rgba(28,25,23,.05), 0 4px 14px rgba(28,25,23,.06);
+  --shadow-md: 0 4px 10px rgba(28,25,23,.07), 0 16px 36px rgba(28,25,23,.11);
 }
 
 .stApp { background: var(--paper); }
@@ -300,69 +304,94 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   color: var(--ink);
 }
 
-/* ---- MASTHEAD (newspaper-style hero) ---- */
-.masthead { text-align: center; padding: 4px 0 0; margin-bottom: 6px; }
-.masthead .dateline {
-  display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 14px;
-  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600;
-  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line);
-  padding: 7px 0; margin-bottom: 22px;
+/* ---- TOP BAR ---- */
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 2px 0 6px; }
+.topbar .wordmark {
+  font-family: 'Newsreader', Georgia, serif; font-size: 24px; font-weight: 600;
+  letter-spacing: -0.02em; color: var(--ink);
 }
-.masthead .dateline .dl-dot { color: var(--accent); }
-.masthead h1 {
-  font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 58px;
-  line-height: 1.0; letter-spacing: -0.025em; margin: 0; color: var(--ink);
+.topbar .wordmark .go { color: var(--accent); font-style: italic; }
+
+/* ---- HERO ---- */
+.hero-wrap { text-align: center; padding: 30px 0 6px; animation: rise .6s ease both; }
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  border-radius: 999px; padding: 7px 16px;
+  font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted);
 }
-.masthead h1 .go { color: var(--accent); font-style: italic; }
-.masthead .sub {
-  font-family: 'Newsreader', Georgia, serif; font-style: italic;
-  font-size: 16px; color: var(--muted); margin-top: 10px; font-weight: 400;
+.hero-chip .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
+.hero-wrap h1 {
+  font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 54px;
+  line-height: 1.06; letter-spacing: -0.025em; color: var(--ink);
+  margin: 22px auto 0; max-width: 780px;
 }
-.masthead .rule-thick { height: 3px; background: var(--ink); margin-top: 20px; }
-.masthead .rule-thin { height: 1px; background: var(--ink); margin-top: 3px; }
-.masthead .howline {
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--muted); font-weight: 600; padding: 9px 0 0;
+.hero-wrap h1 em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  font-size: 16px; color: var(--muted); line-height: 1.65;
+  margin: 14px auto 0; max-width: 600px;
 }
-.masthead .howline .step-n {
-  font-family: 'Newsreader', serif; font-style: italic; font-weight: 600;
-  color: var(--accent); text-transform: none; letter-spacing: 0; font-size: 13px;
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---- STAT STRIP ---- */
+.stat-strip { display: flex; justify-content: center; margin: 28px auto 2px; max-width: 660px; }
+.stat { flex: 1; padding: 2px 18px; text-align: center; }
+.stat + .stat { border-left: 1px solid var(--line); }
+.stat .n { font-family: 'Newsreader', serif; font-size: 30px; font-weight: 600; color: var(--ink); }
+.stat .n em { font-style: italic; color: var(--accent); }
+.stat .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: .14em;
+  color: var(--muted); font-weight: 700; margin-top: 3px; }
+
+/* ---- STEP CHIPS ---- */
+.step-chips { display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+  gap: 10px; margin: 24px 0 10px; }
+.step-chip {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  border-radius: 999px; padding: 8px 17px; font-size: 13px; font-weight: 600; color: var(--ink);
 }
+.step-chip .n {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--grad); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.step-arrow { color: var(--muted); font-size: 14px; }
 
 /* ---- UNIVERSITY BANNER ---- */
 .uni-banner {
-  background: linear-gradient(135deg, #1d1d1f 0%, #2b2118 100%);
-  border-radius: 16px; border-bottom: 3px solid var(--accent);
-  padding: 22px 26px; margin: 16px 0 6px;
+  background: linear-gradient(135deg, #1c1917 0%, #33241a 100%);
+  border-radius: 20px; box-shadow: var(--shadow-md);
+  padding: 24px 28px; margin: 18px 0 8px;
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
 }
 .uni-banner .uni-name {
-  font-family: 'Newsreader', serif; font-size: 24px; font-weight: 600; color: #ffffff;
+  font-family: 'Newsreader', serif; font-size: 25px; font-weight: 600; color: #ffffff;
 }
-.uni-banner .uni-loc { color: #b8b0a4; font-size: 13.5px; margin-top: 3px; }
+.uni-banner .uni-loc { color: #b8b0a4; font-size: 13.5px; margin-top: 4px; }
 .qs-badge {
-  background: var(--accent); color: #fff; border-radius: 10px;
-  padding: 8px 16px; text-align: center; white-space: nowrap;
+  background: var(--grad); color: #fff; border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(188,69,20,.40);
+  padding: 9px 18px; text-align: center; white-space: nowrap;
 }
 .qs-badge .label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.13em; opacity: 0.9; display:block; color:#fff; }
 .qs-badge .num { font-size: 19px; font-weight: 700; color:#fff; }
 
 /* ---- JOB CARD ---- */
 .job-card {
-  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-  border-left: 3px solid var(--line);
-  padding: 18px 20px; margin-bottom: 12px; transition: all .16s ease;
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  border-left: 3px solid transparent;
+  box-shadow: var(--shadow-sm);
+  padding: 20px 22px; margin-bottom: 14px; transition: all .18s ease;
 }
-.job-card:hover { border-color: var(--line); border-left-color: var(--accent);
-  transform: translateY(-2px); box-shadow: 0 10px 28px rgba(29,29,31,.09); }
+.job-card:hover { border-left-color: var(--accent-2);
+  transform: translateY(-3px); box-shadow: var(--shadow-md); }
 .job-title { font-family: 'Newsreader', serif; font-size: 20px; font-weight: 600;
   line-height: 1.25; margin: 0 0 3px; color: var(--ink); }
 .job-employer { font-weight: 600; font-size: 13.5px; color: var(--accent); margin-bottom: 9px; }
 .job-meta { font-size: 12.5px; color: var(--muted); }
 .cat-pill {
   display: inline-block; background: var(--accent-soft); color: var(--accent);
-  border-radius: 5px; padding: 2px 8px; font-size: 11.5px; font-weight: 600; margin-right: 6px;
+  border-radius: 999px; padding: 3px 11px; font-size: 11.5px; font-weight: 600; margin-right: 6px;
 }
 
 /* ---- SECTION LABELS ---- */
@@ -379,7 +408,8 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   background: var(--ink) !important; color: #ffffff !important;
   border: none !important; border-radius: 999px !important; font-weight: 600 !important;
 }
-.stLinkButton a:hover { background: var(--accent) !important; color:#fff !important; }
+.stLinkButton a:hover { background: var(--grad) !important; color:#fff !important;
+  box-shadow: 0 6px 18px rgba(188,69,20,.35) !important; }
 .stLinkButton a p { color:#ffffff !important; }
 
 /* ---- SIDEBAR: force dark, readable text on light bg ---- */
@@ -418,7 +448,10 @@ ul[role="listbox"] li:hover {
 [data-baseweb="select"] > div {
   background: #ffffff !important;
   border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-sm) !important;
 }
+[data-baseweb="select"] > div:focus-within { border-color: var(--accent-2) !important; }
 [data-baseweb="select"] > div > div,
 [data-baseweb="select"] [data-baseweb="input"] div,
 [data-baseweb="select"] span {
@@ -459,7 +492,10 @@ ul[role="listbox"] li[aria-selected="true"] *,
 [data-testid="stFileUploader"] section,
 [data-testid="stFileUploaderDropzone"] {
   background: #ffffff !important; border: 1.5px dashed var(--line) !important;
+  border-radius: 16px !important;
 }
+[data-testid="stFileUploader"] section:hover,
+[data-testid="stFileUploaderDropzone"]:hover { border-color: var(--accent-2) !important; }
 [data-testid="stFileUploader"] section *,
 [data-testid="stFileUploaderDropzone"] * { color: var(--ink) !important; }
 [data-testid="stFileUploader"] button {
@@ -473,7 +509,8 @@ ul[role="listbox"] li[aria-selected="true"] *,
 [data-testid="stExpander"] details,
 [data-testid="stExpander"] summary {
   background: #ffffff !important; color: var(--ink) !important;
-  border: 1px solid var(--line) !important; border-radius: 8px !important;
+  border: 1px solid var(--line) !important; border-radius: 14px !important;
+  box-shadow: var(--shadow-sm);
 }
 [data-testid="stExpander"] * { color: var(--ink) !important; }
 
@@ -483,20 +520,21 @@ ul[role="listbox"] li[aria-selected="true"] *,
 
 /* ---- GROW YOUR SKILLS PANEL ---- */
 .grow-panel {
-  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-  padding: 20px 22px; margin: 8px 0 4px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  padding: 24px 26px; margin: 10px 0 4px;
 }
 .grow-head { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
 .grow-seed { font-size: 20px; line-height: 1; }
 .grow-title {
-  font-family: 'Newsreader', serif; font-size: 22px; font-weight: 600; color: var(--ink);
+  font-family: 'Newsreader', serif; font-size: 23px; font-weight: 600; color: var(--ink);
 }
 .grow-sub { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-bottom: 16px; }
 .grow-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;
 }
 .grow-card {
-  background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px;
 }
 .grow-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; }
 .grow-card-icon { font-size: 17px; line-height: 1; }
@@ -504,19 +542,20 @@ ul[role="listbox"] li[aria-selected="true"] *,
 .grow-rows { display: flex; flex-direction: column; gap: 7px; }
 .course-row {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
-  padding: 8px 11px; text-decoration: none !important; transition: all .14s ease;
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 12px; text-decoration: none !important; transition: all .14s ease;
 }
-.course-row:hover { border-color: var(--accent); transform: translateY(-1px); }
+.course-row:hover { border-color: var(--accent-2); transform: translateY(-1px);
+  box-shadow: var(--shadow-sm); }
 .course-label {
   display: flex; align-items: center; gap: 8px;
   font-size: 12.5px; color: var(--ink) !important; line-height: 1.35;
 }
 .course-tag {
   flex-shrink: 0; font-size: 10px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.04em; padding: 2px 8px; border-radius: 5px;
+  letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px;
 }
-.tag-free { background: #e3f0e4; color: #2f6b34; }
+.tag-free { background: #e4f1e4; color: #2f6b34; }
 .tag-paid { background: var(--accent-soft); color: var(--accent); }
 .course-ext { flex-shrink: 0; color: var(--muted); font-size: 13px; }
 
@@ -524,43 +563,50 @@ ul[role="listbox"] li[aria-selected="true"] *,
 .kofi-btn {
   display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
   background: var(--ink); color: #ffffff !important; text-decoration: none !important;
-  border-radius: 999px; padding: 8px 18px; font-size: 13px; font-weight: 600;
+  border-radius: 999px; padding: 9px 19px; font-size: 13px; font-weight: 600;
   transition: all .16s ease;
 }
-.kofi-btn:hover { background: var(--accent); transform: translateY(-1px); }
+.kofi-btn:hover { background: var(--grad); transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(188,69,20,.35); }
 .grow-support { font-size: 12px; color: var(--muted); margin-top: 14px;
   padding-top: 12px; border-top: 1px dashed var(--line); }
 .grow-support a { color: var(--accent) !important; font-weight: 600; text-decoration: none; }
 .grow-support a:hover { text-decoration: underline; }
 
-/* ---- SITE FOOTER (editorial colophon) ---- */
-.site-footer { margin-top: 28px; }
-.site-footer .rule-thin { height: 1px; background: var(--ink); }
-.site-footer .rule-thick { height: 3px; background: var(--ink); margin-top: 3px; }
+/* ---- SITE FOOTER ---- */
+.site-footer { margin-top: 36px; border-top: 1px solid var(--line); }
 .site-footer .footer-row {
   display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 14px; padding: 18px 0 6px;
+  flex-wrap: wrap; gap: 14px; padding: 22px 0 6px;
 }
-.site-footer .footer-credits { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 620px; }
+.site-footer .footer-wordmark {
+  font-family: 'Newsreader', serif; font-size: 19px; font-weight: 600; color: var(--ink);
+}
+.site-footer .footer-wordmark .go { color: var(--accent); font-style: italic; }
+.site-footer .footer-credits { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 520px; }
 .site-footer .footer-note {
   font-family: 'Newsreader', serif; font-style: italic;
-  font-size: 12.5px; color: var(--muted); padding: 4px 0 14px;
+  font-size: 12.5px; color: var(--muted); padding: 6px 0 16px;
 }
 
 /* ---- ACCESSIBILITY: respect reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+  * { transition: none !important; animation: none !important; }
   .job-card:hover, .course-row:hover, .kofi-btn:hover { transform: none !important; }
 }
 
 /* ---- MOBILE sizing tweaks ---- */
 @media (max-width: 768px) {
-  .masthead h1 { font-size: 36px !important; }
-  .masthead .sub { font-size: 14px !important; }
-  .masthead .dateline { font-size: 9.5px !important; gap: 4px 10px !important; }
-  .masthead .howline { font-size: 10px !important; }
+  .hero-wrap { padding-top: 18px; }
+  .hero-wrap h1 { font-size: 33px !important; }
+  .hero-sub { font-size: 14px !important; }
+  .stat .n { font-size: 22px !important; }
+  .stat { padding: 2px 10px !important; }
+  .stat .l { font-size: 9px !important; }
+  .step-chip { font-size: 12px !important; padding: 7px 13px !important; }
+  .step-arrow { display: none; }
   .block-container { padding: 1rem 0.6rem !important; max-width: 100% !important; }
-  .uni-banner { padding: 16px 18px !important; }
+  .uni-banner { padding: 18px 20px !important; }
   .uni-banner .uni-name { font-size: 20px !important; }
   .job-title { font-size: 17px !important; }
   .site-footer .footer-row { flex-direction: column; align-items: flex-start; }
@@ -588,25 +634,30 @@ def sort_key(u):
 universities_sorted = sorted(universities, key=sort_key)
 
 
-# ── MASTHEAD ──────────────────────────────────────────────────────────────────
+# ── TOP BAR + HERO ────────────────────────────────────────────────────────────
 n_unis = len(universities_sorted)
 n_emps = sum(len(u.get("employers", [])) for u in universities_sorted)
 st.markdown(f"""
-<div class="masthead">
-  <div class="dateline">
-    <span>Australia</span><span class="dl-dot">●</span>
-    <span>{n_unis} universities</span><span class="dl-dot">●</span>
-    <span>{n_emps} employers</span><span class="dl-dot">●</span>
-    <span>Live listings via Adzuna</span>
+<div class="topbar">
+  <div class="wordmark">WhereGrads<span class="go">Go</span></div>
+  <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
+</div>
+<div class="hero-wrap">
+  <div class="hero-chip"><span class="live-dot"></span>Live graduate jobs · Australia</div>
+  <h1>Start your search where graduates <em>actually</em> get hired.</h1>
+  <div class="hero-sub">Pick your university, see the organisations its grads work for,
+    and apply to live openings — or upload your resume and let AI match jobs to your skills.</div>
+  <div class="stat-strip">
+    <div class="stat"><div class="n">{n_unis}</div><div class="l">Universities</div></div>
+    <div class="stat"><div class="n">{n_emps}</div><div class="l">Employers</div></div>
+    <div class="stat"><div class="n"><em>Live</em></div><div class="l">Adzuna job feed</div></div>
   </div>
-  <h1>WhereGrads<span class="go">Go</span></h1>
-  <div class="sub">Find live jobs at the organisations your university's graduates actually work for.</div>
-  <div class="rule-thick"></div>
-  <div class="rule-thin"></div>
-  <div class="howline">
-    <span class="step-n">i.</span> Pick your university &nbsp;
-    <span class="step-n">ii.</span> See where its grads work &nbsp;
-    <span class="step-n">iii.</span> Apply to live openings
+  <div class="step-chips">
+    <span class="step-chip"><span class="n">1</span>Pick your university</span>
+    <span class="step-arrow">→</span>
+    <span class="step-chip"><span class="n">2</span>See where its grads work</span>
+    <span class="step-arrow">→</span>
+    <span class="step-chip"><span class="n">3</span>Apply or smart-match</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -812,12 +863,13 @@ if growth_source:
 
 st.markdown(f"""
 <div class="site-footer">
-  <div class="rule-thin"></div>
-  <div class="rule-thick"></div>
   <div class="footer-row">
-    <div class="footer-credits">Employer data compiled from public sources ·
-      Job listings via the Adzuna API · QS World University Rankings 2026 ·
-      “Apply” opens the original posting.</div>
+    <div>
+      <div class="footer-wordmark">WhereGrads<span class="go">Go</span></div>
+      <div class="footer-credits">Employer data compiled from public sources ·
+        Job listings via the Adzuna API · QS World University Rankings 2026 ·
+        “Apply” opens the original posting.</div>
+    </div>
     <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
   </div>
   <div class="footer-note">Built by Harsh Rastogi — a smarter, honest way to start a graduate job search.</div>
