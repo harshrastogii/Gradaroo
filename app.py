@@ -1,5 +1,5 @@
 """
-WhereGradsGo — find jobs where your university's graduates actually work.
+Gradaroo. Find jobs where your university's graduates actually work.
 
 Run locally:   streamlit run app.py
 Needs:         pip install streamlit requests pypdf
@@ -10,7 +10,7 @@ import json
 import requests
 import streamlit as st
 
-# resume parsing is optional — app still runs if these aren't installed
+# resume parsing is optional - app still runs if these aren't installed
 try:
     from pypdf import PdfReader
     PYPDF_OK = True
@@ -29,7 +29,7 @@ except Exception:
 # model, which UNDERSTANDS the person's actual skills/interests (not just their
 # degree) and maps them to job categories. Robust to any skill, any field.
 
-# Adzuna's real category labels — Gemini maps to these exact strings so the
+# Adzuna's real category labels - Gemini maps to these exact strings so the
 # result plugs straight into the job filter.
 ADZUNA_CATEGORIES = [
     "IT Jobs", "Healthcare & Nursing Jobs", "Engineering Jobs",
@@ -48,7 +48,7 @@ def _build_prompt(resume_text):
 actual skills and interests, then choose which job categories best fit them.
 
 IMPORTANT RULES:
-- Judge by their ACTUAL skills, projects, and interests — NOT just their degree.
+- Judge by their ACTUAL skills, projects, and interests - NOT just their degree.
 - A person studying one field may have skills or passion in another. Respect that.
 - Pick 1 to 4 categories, ordered best-fit first.
 - Choose ONLY from this exact list (copy the strings exactly):
@@ -97,7 +97,7 @@ def analyse_resume(uploaded_file, api_key):
                 time.sleep(2 * (attempt + 1))  # 2s, 4s, 6s
                 continue
             return {"ok": False, "error": f"AI analysis failed: {last_err[:120]}"}
-    return {"ok": False, "error": "AI is busy right now — please try again in a moment."}
+    return {"ok": False, "error": "Matching is busy right now. Please try again in a moment."}
 
 # ── API CREDENTIALS ───────────────────────────────────────────────────────────
 def get_secret(key, default):
@@ -119,49 +119,49 @@ def _keys_missing():
 
 # ── COURSE CATALOG ────────────────────────────────────────────────────────────
 # Keyed to Adzuna's exact category strings so it plugs straight into resume
-# matches and the interest filter. Plain links for now — swap to affiliate links
+# matches and the interest filter. Plain links for now - swap to affiliate links
 # once programs approve. Free options are genuinely free; we earn nothing.
 COURSE_CATALOG = {
     "IT Jobs": {
-        "free": [("freeCodeCamp — full coding & data curriculum", "https://www.freecodecamp.org/learn"),
-                 ("Kaggle Learn — hands-on data science", "https://www.kaggle.com/learn")],
+        "free": [("freeCodeCamp · full coding & data curriculum", "https://www.freecodecamp.org/learn"),
+                 ("Kaggle Learn · hands-on data science", "https://www.kaggle.com/learn")],
         "paid": [("Google Data Analytics Certificate (Coursera)", "https://www.coursera.org/professional-certificates/google-data-analytics"),
                  ("Python courses (Udemy)", "https://www.udemy.com/topic/python/")],
     },
     "PR, Advertising & Marketing Jobs": {
-        "free": [("HubSpot Academy — free marketing certs", "https://academy.hubspot.com/courses"),
-                 ("Google Skillshop — Ads & Analytics", "https://skillshop.withgoogle.com/")],
+        "free": [("HubSpot Academy · free marketing certs", "https://academy.hubspot.com/courses"),
+                 ("Google Skillshop · Ads & Analytics", "https://skillshop.withgoogle.com/")],
         "paid": [("Google Digital Marketing Certificate (Coursera)", "https://www.coursera.org/professional-certificates/google-digital-marketing-ecommerce"),
                  ("Digital marketing courses (Udemy)", "https://www.udemy.com/topic/digital-marketing/")],
     },
     "Accounting & Finance Jobs": {
-        "free": [("Khan Academy — finance & economics", "https://www.khanacademy.org/economics-finance-domain"),
+        "free": [("Khan Academy · finance & economics", "https://www.khanacademy.org/economics-finance-domain"),
                  ("Xero training (widely used in AU)", "https://www.xero.com/au/training/")],
         "paid": [("Finance courses (Coursera)", "https://www.coursera.org/browse/business/finance"),
                  ("Accounting courses (Udemy)", "https://www.udemy.com/topic/accounting/")],
     },
     "Admin Jobs": {
-        "free": [("Microsoft Learn — Office & productivity", "https://learn.microsoft.com/training/")],
+        "free": [("Microsoft Learn · Office & productivity", "https://learn.microsoft.com/training/")],
         "paid": [("Excel courses (Udemy)", "https://www.udemy.com/topic/excel/")],
     },
     "Engineering Jobs": {
-        "free": [("MIT OpenCourseWare — engineering", "https://ocw.mit.edu/")],
+        "free": [("MIT OpenCourseWare · engineering", "https://ocw.mit.edu/")],
         "paid": [("AutoCAD courses (Udemy)", "https://www.udemy.com/topic/autocad/")],
     },
     "Healthcare & Nursing Jobs": {
-        "free": [("FutureLearn — healthcare courses", "https://www.futurelearn.com/subjects/healthcare-medicine-courses")],
+        "free": [("FutureLearn · healthcare courses", "https://www.futurelearn.com/subjects/healthcare-medicine-courses")],
         "paid": [("Health courses (Coursera)", "https://www.coursera.org/browse/health")],
     },
     "Teaching Jobs": {
-        "free": [("FutureLearn — teaching courses", "https://www.futurelearn.com/subjects/teaching-courses")],
+        "free": [("FutureLearn · teaching courses", "https://www.futurelearn.com/subjects/teaching-courses")],
         "paid": [("Education courses (Coursera)", "https://www.coursera.org/browse/social-sciences/education")],
     },
     "Sales Jobs": {
-        "free": [("HubSpot Academy — free sales training", "https://academy.hubspot.com/courses?topic=sales")],
+        "free": [("HubSpot Academy · free sales training", "https://academy.hubspot.com/courses?topic=sales")],
         "paid": [("Sales courses (Udemy)", "https://www.udemy.com/topic/sales-skills/")],
     },
     "Customer Services Jobs": {
-        "free": [("HubSpot Academy — service training", "https://academy.hubspot.com/courses?topic=service")],
+        "free": [("HubSpot Academy · service training", "https://academy.hubspot.com/courses?topic=service")],
         "paid": [("Customer service courses (Udemy)", "https://www.udemy.com/topic/customer-service/")],
     },
     "Creative & Design Jobs": {
@@ -170,7 +170,7 @@ COURSE_CATALOG = {
     },
 }
 
-# Tabler-style emoji icon per category (kept simple — no external font needed).
+# Tabler-style emoji icon per category (kept simple - no external font needed).
 CATEGORY_ICONS = {
     "IT Jobs": "💻",
     "PR, Advertising & Marketing Jobs": "📣",
@@ -227,10 +227,10 @@ def render_growth_panel(matched_cats, max_cards=3):
     <span class="grow-title">Grow your skills</span>
   </div>
   <div class="grow-sub">Free options are genuinely free. Paid courses include a
-    shareable certificate, which helps prove the skill to employers — pick whatever
+    shareable certificate, which helps prove the skill to employers. Pick whatever
     fits your budget. These are plain links; we earn nothing from them.</div>
   <div class="grow-grid">{''.join(cards)}</div>
-  <div class="grow-support">WhereGradsGo is free and earns nothing from these links.
+  <div class="grow-support">Gradaroo is free and earns nothing from these links.
     If it helped you, you can <a href="{KOFI_URL}" target="_blank" rel="noopener">buy me a coffee on Ko-fi ☕</a></div>
 </div>
 """, unsafe_allow_html=True)
@@ -272,8 +272,13 @@ def fetch_jobs(employer_name, region, max_results=30):
 
 
 # ── PAGE CONFIG ─────────────────────────────────────────────────────────────--
-st.set_page_config(page_title="WhereGradsGo", page_icon="🎓",
+st.set_page_config(page_title="Gradaroo", page_icon="🎓",
                    layout="centered", initial_sidebar_state="collapsed")
+
+# Hide Streamlit's auto-generated page nav; we render our own clean labels below.
+st.markdown("""
+<style>[data-testid="stSidebarNav"] { display: none; }</style>
+""", unsafe_allow_html=True)
 
 # ── CUSTOM STYLING ────────────────────────────────────────────────────────────
 st.markdown("""
@@ -305,12 +310,16 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 }
 
 /* ---- TOP BAR ---- */
-.topbar { display: flex; justify-content: space-between; align-items: center; padding: 2px 0 6px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 0 8px; }
 .topbar .wordmark {
-  font-family: 'Newsreader', Georgia, serif; font-size: 24px; font-weight: 600;
+  font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 600;
   letter-spacing: -0.02em; color: var(--ink);
 }
 .topbar .wordmark .go { color: var(--accent); font-style: italic; }
+.topbar-links { display: flex; align-items: center; gap: 18px; }
+.topnav-link { color: var(--ink) !important; font-size: 14px; font-weight: 600;
+  text-decoration: none !important; transition: color .14s ease; }
+.topnav-link:hover { color: var(--accent) !important; }
 
 /* ---- HERO ---- */
 .hero-wrap { text-align: center; padding: 30px 0 6px; animation: rise .6s ease both; }
@@ -412,6 +421,20 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   box-shadow: 0 6px 18px rgba(188,69,20,.35) !important; }
 .stLinkButton a p { color:#ffffff !important; }
 
+/* Desktop: nudge the Apply button down so it centers against the card beside
+   it (replaces the old blank-line spacers, which broke mobile). Scoped to the
+   job-card rows on wide screens only. */
+@media (min-width: 769px) {
+  [data-testid="stHorizontalBlock"]:has(.job-card) .stLinkButton { margin-top: 30px; }
+}
+/* Mobile: columns stack vertically. Pull the button up snug under its card,
+   add room before the next card. */
+@media (max-width: 768px) {
+  [data-testid="stHorizontalBlock"]:has(.job-card) .stLinkButton { margin-top: 0 !important; margin-bottom: 4px; }
+  [data-testid="stHorizontalBlock"]:has(.job-card) .job-card { margin-bottom: 8px !important; }
+  [data-testid="stHorizontalBlock"]:has(.job-card) + [data-testid="stHorizontalBlock"] { margin-top: 20px; }
+}
+
 /* ---- SIDEBAR: force dark, readable text on light bg ---- */
 [data-testid="stSidebar"] { background: #ebe5db; border-right: 1.5px solid var(--ink); }
 [data-testid="stSidebar"] * { color: var(--ink) !important; }
@@ -444,7 +467,7 @@ ul[role="listbox"] li:hover {
 [data-baseweb="tag"] { background: var(--accent) !important; }
 [data-baseweb="tag"] span { color: #ffffff !important; }
 
-/* ---- FIX: closed select boxes — white bg, dark text (was dark-on-dark) ---- */
+/* ---- FIX: closed select boxes - white bg, dark text (was dark-on-dark) ---- */
 [data-baseweb="select"] > div {
   background: #ffffff !important;
   border: 1px solid var(--line) !important;
@@ -598,6 +621,7 @@ ul[role="listbox"] li[aria-selected="true"] *,
 /* ---- MOBILE sizing tweaks ---- */
 @media (max-width: 768px) {
   .hero-wrap { padding-top: 18px; }
+  .topbar .wordmark { font-size: 26px !important; }
   .hero-wrap h1 { font-size: 33px !important; }
   .hero-sub { font-size: 14px !important; }
   .stat .n { font-size: 22px !important; }
@@ -639,18 +663,21 @@ n_unis = len(universities_sorted)
 n_emps = sum(len(u.get("employers", [])) for u in universities_sorted)
 st.markdown(f"""
 <div class="topbar">
-  <div class="wordmark">WhereGrads<span class="go">Go</span></div>
-  <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
+  <div class="wordmark">Grad<span class="go">aroo</span></div>
+  <div class="topbar-links">
+    <a class="topnav-link" href="/About_Gradaroo" target="_self">About</a>
+    <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
+  </div>
 </div>
 <div class="hero-wrap">
   <div class="hero-chip"><span class="live-dot"></span>Live graduate jobs · Australia</div>
   <h1>Start your search where graduates <em>actually</em> get hired.</h1>
   <div class="hero-sub">Pick your university, see the organisations its grads work for,
-    and apply to live openings — or upload your resume and let AI match jobs to your skills.</div>
+    and apply to live openings. Or upload your resume and let Gradaroo match jobs to your skills.</div>
   <div class="stat-strip">
     <div class="stat"><div class="n">{n_unis}</div><div class="l">Universities</div></div>
     <div class="stat"><div class="n">{n_emps}</div><div class="l">Employers</div></div>
-    <div class="stat"><div class="n"><em>Live</em></div><div class="l">Adzuna job feed</div></div>
+    <div class="stat"><div class="n"><em>Live</em></div><div class="l">Updated daily</div></div>
   </div>
   <div class="step-chips">
     <span class="step-chip"><span class="n">1</span>Pick your university</span>
@@ -658,6 +685,8 @@ st.markdown(f"""
     <span class="step-chip"><span class="n">2</span>See where its grads work</span>
     <span class="step-arrow">→</span>
     <span class="step-chip"><span class="n">3</span>Apply or smart-match</span>
+    <span class="step-arrow">→</span>
+    <span class="step-chip"><span class="n">4</span>Grow your skills</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -673,39 +702,7 @@ if _keys_missing():
     st.stop()
 
 
-# ── ABOUT ─────────────────────────────────────────────────────────────────────
-with st.expander("About WhereGradsGo — how it works & data honesty"):
-    st.markdown("""
-**The idea:** Employers that hire a lot of a university's graduates tend to keep
-hiring them. WhereGradsGo helps students start their search from those organisations,
-then shows live job openings there.
-
-**How job matching works:**
-- Pick your university → see its key employers.
-- Browse live jobs at those employers (pulled from the Adzuna job API).
-- Filter by area of interest, or upload your resume and let AI match jobs to your
-  actual skills.
-- "Apply" takes you to the original job posting.
-
-**Being honest about the data:**
-- **✅ Curated universities** (Charles Darwin, Tasmania, James Cook, Charles Sturt,
-  University of New England, CQUniversity, Federation): these show employer lists
-  compiled from public, regional employment sources — a genuine reflection of where
-  graduates commonly work.
-- **Other universities:** these show the *largest graduate employers in the state*,
-  which is a useful starting point but **not** a verified alumni list for that
-  specific university. We label this clearly so you know what you're seeing.
-- We do **not** scrape LinkedIn or any site's private data. Job listings come from a
-  proper job API; employer lists are curated from public information.
-- **Resume privacy:** if you upload a resume, its text is sent to Google's Gemini
-  (free tier) to identify your skills. Don't upload anything you're not comfortable
-  sharing with a third-party AI service.
-
-*QS rankings from QS World University Rankings 2026.*
-""")
-
-
-# ── CONTROLS (main page — always visible, mobile-safe) ───────────────────────--
+# ── CONTROLS (main page, always visible, mobile-safe) ────────────────────────--
 st.markdown('<div class="section-label">🎓 Find your university</div>', unsafe_allow_html=True)
 c1, c2 = st.columns([1, 1])
 with c1:
@@ -727,13 +724,13 @@ with c2:
 
 # ── Resume upload (AI-powered) ──
 resume_cats = []
-with st.expander("📄 Smart match — upload your resume to match jobs to your skills"):
+with st.expander("📄 Smart match · upload your resume to match jobs to your skills"):
     if PYPDF_OK and GENAI_OK and GEMINI_KEY:
         resume_file = st.file_uploader(
-            "Upload your resume (PDF). AI reads your skills and matches jobs.",
+            "Upload your resume (PDF). Gradaroo reads your skills and matches jobs.",
             type=["pdf"])
         if resume_file is not None:
-            with st.spinner("AI is reading your resume..."):
+            with st.spinner("Reading your resume..."):
                 result = analyse_resume(resume_file, GEMINI_KEY)
             if result["ok"] and result["categories"]:
                 resume_cats = result["categories"]
@@ -745,10 +742,10 @@ with st.expander("📄 Smart match — upload your resume to match jobs to your 
                 st.markdown("**All matched areas:** " + " · ".join(resume_cats))
             elif result["ok"]:
                 st.warning("AI couldn't confidently match your resume. "
-                           "Showing all jobs — use the filter below.")
+                           "Showing all jobs. Use the filter below.")
             else:
                 st.error(result.get("error", "Something went wrong."))
-        st.caption("Resumes are analysed by Google's free-tier AI.")
+        st.caption("Your resume is read securely to find your skills. See About for how we handle your data.")
     else:
         st.caption("Resume matching needs: pip install pypdf google-genai")
 
@@ -756,7 +753,7 @@ with st.expander("📄 Smart match — upload your resume to match jobs to your 
 # ── UNIVERSITY BANNER ─────────────────────────────────────────────────────────
 qs_html = (f'<div class="qs-badge"><span class="label">QS World 2026</span>'
            f'<span class="num">#{uni["qs"]}</span></div>') if uni.get("qs") else \
-          '<div class="qs-badge"><span class="label">QS World 2026</span><span class="num">—</span></div>'
+          '<div class="qs-badge"><span class="label">QS World 2026</span><span class="num">NR</span></div>'
 st.markdown(f"""
 <div class="uni-banner">
   <div>
@@ -779,8 +776,8 @@ if mode == "alumni":
     st.caption("Curated from public graduate-destination and regional employment sources.")
 else:
     st.markdown(f"#### Major graduate employers in {uni['region']}")
-    st.caption("These are the state's largest graduate employers — a useful starting "
-               "point, but not a verified alumni list for this specific university.")
+    st.caption("These are the state's largest graduate employers. It's a useful starting "
+               "point, though not a verified alumni list for this specific university.")
 
 
 # ── FETCH JOBS ──────────────────────────────────────────────────────────────--
@@ -850,7 +847,6 @@ else:
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            st.write(""); st.write("")
             st.link_button("Apply ↗", j["url"], use_container_width=True)
 
 # ── GROW YOUR SKILLS ──────────────────────────────────────────────────────────
@@ -865,13 +861,13 @@ st.markdown(f"""
 <div class="site-footer">
   <div class="footer-row">
     <div>
-      <div class="footer-wordmark">WhereGrads<span class="go">Go</span></div>
+      <div class="footer-wordmark">Grad<span class="go">aroo</span></div>
       <div class="footer-credits">Employer data compiled from public sources ·
         Job listings via the Adzuna API · QS World University Rankings 2026 ·
         “Apply” opens the original posting.</div>
     </div>
     <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
   </div>
-  <div class="footer-note">Built by Harsh Rastogi — a smarter, honest way to start a graduate job search.</div>
+  <div class="footer-note">Built by Harsh Rastogi. A smarter, honest way to start a graduate job search.</div>
 </div>
 """, unsafe_allow_html=True)
