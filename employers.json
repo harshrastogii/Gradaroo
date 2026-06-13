@@ -1,6 +1,5 @@
 {
-  "_README": "WhereGradsGo dataset. QS column = QS World University Rankings 2026 (released June 2025). 'qs' is null where the institution is not QS-ranked. Only CDU has a full curated employer list so far; other universities have an empty 'employers' list to be filled in over time. 'region' feeds the Adzuna 'where' parameter. Employer data is compiled from PUBLIC sources, never scraped from LinkedIn.",
-  "universities": [
+"_README": "Gradaroo dataset. QS column = QS World University Rankings 2026 (released June 2025). 'qs' is null where the institution is not QS-ranked. Curated universities (CDU, Tasmania, James Cook, Charles Sturt, University of New England, CQUniversity, Federation) have employer lists compiled from public regional employment sources; other universities show the state's largest graduate employers as a labelled approximation. 'region' feeds the Adzuna 'where' parameter. Employer data is compiled from PUBLIC sources, never scraped from LinkedIn.",  "universities": [
     {
       "id": "cdu",
       "name": "Charles Darwin University",
