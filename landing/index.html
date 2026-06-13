@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ── Primary SEO ──────────────────────────────────────────────── -->
+  <title>Gradaroo — Find jobs where your university's graduates actually work</title>
+  <meta name="description" content="Gradaroo helps Australian graduates start their job search smarter. Pick your university, see the employers its graduates work for, and browse live job openings at those organisations." />
+  <link rel="canonical" href="https://gradaroo.com/" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- ── Open Graph (LinkedIn / Facebook link previews) ───────────── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Gradaroo" />
+  <meta property="og:title" content="Gradaroo — Find jobs where your university's graduates actually work" />
+  <meta property="og:description" content="Pick your university, see where its graduates work, and apply to live openings. A smarter, honest start to the Australian graduate job hunt." />
+  <meta property="og:url" content="https://gradaroo.com/" />
+  <meta property="og:image" content="https://gradaroo.com/og-image.png" />
+  <meta property="og:locale" content="en_AU" />
+
+  <!-- ── Twitter / X card ─────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Gradaroo — Start your search where graduates actually get hired" />
+  <meta name="twitter:description" content="Pick your Australian university, see the employers its graduates work for, and browse live job openings at those organisations." />
+  <meta name="twitter:image" content="https://gradaroo.com/og-image.png" />
+
+  <!-- ── Structured data: tells Google what this site IS ──────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Gradaroo",
+    "url": "https://gradaroo.com/",
+    "description": "Gradaroo helps Australian university graduates find live job openings at the organisations their university's graduates commonly work for.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "AUD" },
+    "areaServed": { "@type": "Country", "name": "Australia" },
+    "author": { "@type": "Person", "name": "Harsh Rastogi" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does Gradaroo work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Pick your Australian university and Gradaroo shows the organisations its graduates commonly work for, then pulls live job openings at those employers from a jobs API. You can filter by area of interest or upload your resume for an AI skills match." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Gradaroo free?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Gradaroo is completely free to use and shows live graduate job listings across Australia." }
+      },
+      {
+        "@type": "Question",
+        "name": "Which universities does Gradaroo cover?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Gradaroo covers 40 Australian universities, sorted by QS World University Ranking, from Charles Darwin University and the University of Melbourne through to regional institutions." }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --ink: #1c1917; --paper: #faf6f0; --card: #ffffff;
+      --accent: #bc4514; --accent-2: #e8742c;
+      --grad: linear-gradient(135deg, #bc4514 0%, #e8742c 100%);
+      --line: #ece3d6; --muted: #756c5f;
+      --shadow-sm: 0 1px 2px rgba(28,25,23,.05), 0 4px 14px rgba(28,25,23,.06);
+      --shadow-md: 0 4px 10px rgba(28,25,23,.07), 0 16px 36px rgba(28,25,23,.11);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: 'Libre Franklin', -apple-system, sans-serif; line-height: 1.6;
+    }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 0 22px; }
+    a { color: var(--accent); }
+
+    /* Top bar */
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 22px 0 8px; }
+    .wordmark { font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
+    .wordmark .go { color: var(--accent); font-style: italic; }
+    .topnav a { color: var(--ink); font-size: 14px; font-weight: 600; text-decoration: none; margin-left: 20px; }
+    .topnav a:hover { color: var(--accent); }
+
+    /* Hero */
+    .hero { text-align: center; padding: 46px 0 8px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px; background: var(--card);
+      border: 1px solid var(--line); box-shadow: var(--shadow-sm); border-radius: 999px;
+      padding: 7px 16px; font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted);
+    }
+    .chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
+    h1 {
+      font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 56px;
+      line-height: 1.06; letter-spacing: -.025em; margin: 22px auto 0; max-width: 800px;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .lede { font-size: 18px; color: var(--muted); max-width: 620px; margin: 16px auto 0; }
+    .cta-row { margin: 30px 0 6px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; text-decoration: none; border-radius: 999px;
+      padding: 13px 28px; font-weight: 600; font-size: 15px; transition: all .16s ease;
+    }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-primary:hover { background: var(--grad); box-shadow: 0 6px 18px rgba(188,69,20,.35); transform: translateY(-1px); }
+    .btn-ghost { background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+    .btn-ghost:hover { border-color: var(--accent-2); color: var(--accent); }
+
+    /* Stat strip */
+    .stats { display: flex; justify-content: center; margin: 38px auto 6px; max-width: 640px; }
+    .stat { flex: 1; padding: 2px 18px; text-align: center; }
+    .stat + .stat { border-left: 1px solid var(--line); }
+    .stat .n { font-family: 'Newsreader', serif; font-size: 32px; font-weight: 600; }
+    .stat .n em { font-style: italic; color: var(--accent); }
+    .stat .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); font-weight: 700; margin-top: 3px; }
+
+    /* Sections */
+    section { padding: 40px 0; }
+    .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    h2 { font-family: 'Newsreader', serif; font-size: 34px; font-weight: 600; letter-spacing: -.02em; margin: 6px 0 0; }
+    h3 { font-family: 'Newsreader', serif; font-size: 21px; font-weight: 600; margin: 0 0 4px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 22px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; box-shadow: var(--shadow-sm); }
+    .card .step-n {
+      width: 28px; height: 28px; border-radius: 50%; background: var(--grad); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; margin-bottom: 12px;
+    }
+    .card p { color: var(--muted); font-size: 14.5px; margin: 0; }
+
+    /* Universities list — real crawlable text for long-tail SEO */
+    .uni-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .uni-tag {
+      background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px 14px; font-size: 13px; color: var(--ink); box-shadow: var(--shadow-sm);
+    }
+
+    /* FAQ */
+    .faq { margin-top: 22px; }
+    .faq details {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      padding: 4px 20px; margin-bottom: 10px; box-shadow: var(--shadow-sm);
+    }
+    .faq summary { font-weight: 600; cursor: pointer; padding: 14px 0; list-style: none; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; float: right; color: var(--accent); font-size: 20px; }
+    .faq details[open] summary::after { content: "−"; }
+    .faq p { color: var(--muted); margin: 0 0 16px; font-size: 14.5px; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--line); margin-top: 24px; }
+    .foot-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; padding: 26px 0; }
+    .foot-credits { font-size: 12.5px; color: var(--muted); max-width: 540px; line-height: 1.6; }
+    .foot-note { font-family: 'Newsreader', serif; font-style: italic; font-size: 12.5px; color: var(--muted); padding-bottom: 22px; }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 36px; }
+      .lede { font-size: 15.5px; }
+      .wordmark { font-size: 26px; }
+      .stat .n { font-size: 24px; }
+      h2 { font-size: 27px; }
+      .foot-row { flex-direction: column; align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <div class="topbar">
+      <div class="wordmark">Grad<span class="go">aroo</span></div>
+      <nav class="topnav">
+        <a href="https://app.gradaroo.com">Find jobs</a>
+        <a href="https://app.gradaroo.com/About_Gradaroo">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <span class="chip"><span class="dot"></span>Live graduate jobs · Australia</span>
+      <h1>Start your search where graduates <em>actually</em> get hired.</h1>
+      <p class="lede">Most job boards hand you a giant pile of listings and no idea where to begin. Gradaroo starts from a simple truth: the organisations that hire a lot of a university's graduates tend to keep hiring them. So that's where your search should start.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://app.gradaroo.com">Find graduate jobs →</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">40</div><div class="l">Universities</div></div>
+        <div class="stat"><div class="n">500+</div><div class="l">Employers</div></div>
+        <div class="stat"><div class="n"><em>Live</em></div><div class="l">Updated daily</div></div>
+      </div>
+    </section>
+
+    <section id="how" class="wrap">
+      <span class="eyebrow">How it works</span>
+      <h2>Four steps from confused to applying.</h2>
+      <div class="grid">
+        <div class="card"><div class="step-n">1</div><h3>Pick your university</h3><p>Choose from 40 Australian universities, sorted by world ranking.</p></div>
+        <div class="card"><div class="step-n">2</div><h3>See where its grads work</h3><p>A curated employer list, or the state's largest graduate employers — always clearly labelled.</p></div>
+        <div class="card"><div class="step-n">3</div><h3>Apply or smart-match</h3><p>Browse live openings at those employers, or upload your resume to match jobs to your skills.</p></div>
+        <div class="card"><div class="step-n">4</div><h3>Grow your skills</h3><p>For your matched areas, Gradaroo suggests free and paid courses to close any gaps.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <span class="eyebrow">Coverage</span>
+      <h2>Built for Australian graduates.</h2>
+      <p class="lede" style="margin-left:0;text-align:left;max-width:680px;">Wherever you studied, Gradaroo helps you find where graduates from your university work — and the live jobs open there right now. Covering universities across every state and territory:</p>
+      <div class="uni-cloud">
+        <span class="uni-tag">University of Melbourne</span>
+        <span class="uni-tag">UNSW Sydney</span>
+        <span class="uni-tag">University of Sydney</span>
+        <span class="uni-tag">Australian National University</span>
+        <span class="uni-tag">Monash University</span>
+        <span class="uni-tag">University of Queensland</span>
+        <span class="uni-tag">University of Western Australia</span>
+        <span class="uni-tag">University of Adelaide</span>
+        <span class="uni-tag">UTS</span>
+        <span class="uni-tag">RMIT University</span>
+        <span class="uni-tag">Macquarie University</span>
+        <span class="uni-tag">Curtin University</span>
+        <span class="uni-tag">University of Wollongong</span>
+        <span class="uni-tag">Deakin University</span>
+        <span class="uni-tag">QUT</span>
+        <span class="uni-tag">University of Newcastle</span>
+        <span class="uni-tag">Griffith University</span>
+        <span class="uni-tag">University of South Australia</span>
+        <span class="uni-tag">Flinders University</span>
+        <span class="uni-tag">University of Tasmania</span>
+        <span class="uni-tag">James Cook University</span>
+        <span class="uni-tag">Charles Darwin University</span>
+        <span class="uni-tag">Charles Sturt University</span>
+        <span class="uni-tag">…and more</span>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <span class="eyebrow">Honest by design</span>
+      <h2>We're upfront about our data.</h2>
+      <div class="grid">
+        <div class="card"><h3>Curated employer lists</h3><p>For several universities, employer lists are compiled from public, regional employment sources — a genuine reflection of where graduates commonly work.</p></div>
+        <div class="card"><h3>Clearly labelled estimates</h3><p>For others, we show the state's largest graduate employers — a useful starting point, labelled so you always know what you're looking at.</p></div>
+        <div class="card"><h3>No scraping, ever</h3><p>We don't scrape LinkedIn or any site's private data. Job listings come from a proper jobs API; employer lists are curated from public information.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <span class="eyebrow">Questions</span>
+      <h2>Good to know.</h2>
+      <div class="faq">
+        <details open><summary>How does Gradaroo work?</summary><p>Pick your Australian university and Gradaroo shows the organisations its graduates commonly work for, then pulls live job openings at those employers. You can filter by area of interest, or upload your resume for an AI skills match.</p></details>
+        <details><summary>Is Gradaroo free?</summary><p>Yes — completely free, with live graduate job listings across Australia. If it helps you, there's an optional Ko-fi tip jar, but nothing is paywalled.</p></details>
+        <details><summary>Which universities are covered?</summary><p>40 Australian universities, sorted by QS World University Ranking, from Charles Darwin University and the University of Melbourne through to regional institutions.</p></details>
+        <details><summary>What happens to my resume?</summary><p>Smart match is optional. If you upload a resume, its text is read by a third-party AI service to identify your skills. We don't store your resume.</p></details>
+      </div>
+      <div class="cta-row" style="justify-content:flex-start;margin-top:28px;">
+        <a class="btn btn-primary" href="https://app.gradaroo.com">Start your search →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-row">
+        <div class="wordmark" style="font-size:20px;">Grad<span class="go">aroo</span></div>
+        <div class="foot-credits">Employer data compiled from public sources · Job listings via the Adzuna API · QS World University Rankings 2026 · "Apply" opens the original posting.</div>
+      </div>
+      <div class="foot-note">Built by Harsh Rastogi. A smarter, honest way to start a graduate job search.</div>
+    </div>
+  </footer>
+</body>
+</html>

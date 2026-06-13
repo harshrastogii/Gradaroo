@@ -1,0 +1,5 @@
+# Gradaroo — allow all crawlers
+User-agent: *
+Allow: /
+
+Sitemap: https://gradaroo.com/sitemap.xml
