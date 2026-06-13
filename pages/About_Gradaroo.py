@@ -8,6 +8,19 @@ import streamlit as st
 st.set_page_config(page_title="About Gradaroo", page_icon="🎓",
                    layout="centered", initial_sidebar_state="collapsed")
 
+# Hide Streamlit's auto-generated page nav and the top-right toolbar so the
+# page reads as a clean website, matching the home page.
+st.markdown("""
+<style>
+[data-testid="stSidebarNav"] { display: none; }
+[data-testid="stSidebar"] { display: none; }
+[data-testid="stToolbar"] { display: none; }
+[data-testid="stStatusWidget"] { display: none; }
+#MainMenu { display: none; }
+header { display: none; }
+</style>
+""", unsafe_allow_html=True)
+
 # Shared styling (kept light here; the home page carries the full theme).
 st.markdown("""
 <style>

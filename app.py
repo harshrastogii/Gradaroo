@@ -284,7 +284,14 @@ st.set_page_config(page_title="Gradaroo", page_icon="🎓",
 
 # Hide Streamlit's auto-generated page nav; we render our own clean labels below.
 st.markdown("""
-<style>[data-testid="stSidebarNav"] { display: none; }</style>
+<style>
+[data-testid="stSidebarNav"] { display: none; }
+[data-testid="stSidebar"] { display: none; }
+[data-testid="stSidebarCollapsedControl"] { display: none; }
+[data-testid="stToolbar"] { display: none; }
+[data-testid="stStatusWidget"] { display: none; }
+header { display: none; }
+</style>
 """, unsafe_allow_html=True)
 
 # ── CUSTOM STYLING ────────────────────────────────────────────────────────────
