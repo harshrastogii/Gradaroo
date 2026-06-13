@@ -6,6 +6,7 @@ Needs:         pip install streamlit requests pypdf
 Data file:     employers.json  (must sit next to this file)
 """
 
+import os
 import json
 import requests
 import streamlit as st
@@ -101,6 +102,12 @@ def analyse_resume(uploaded_file, api_key):
 
 # ── API CREDENTIALS ───────────────────────────────────────────────────────────
 def get_secret(key, default):
+    # Render and most hosts provide secrets as environment variables; Streamlit
+    # Community Cloud provides them via st.secrets. Check both so the same code
+    # runs on either platform.
+    val = os.environ.get(key)
+    if val:
+        return val
     try:
         return st.secrets[key]
     except Exception:
