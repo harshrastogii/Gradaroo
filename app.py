@@ -7,7 +7,9 @@ Data file:     employers.json  (must sit next to this file)
 """
 
 import os
+import html
 import json
+import logging
 import requests
 import streamlit as st
 
@@ -23,6 +25,30 @@ try:
     GENAI_OK = True
 except Exception:
     GENAI_OK = False
+
+# Server-side logger. User-facing errors stay generic; details go here only.
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("gradaroo")
+
+# Hard cap on resume upload size (bytes) before we hand the PDF to pypdf.
+# Protects the free-tier host from oversized / malicious PDFs.
+MAX_RESUME_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
+def safe(value):
+    """HTML-escape any externally-sourced string before it goes into
+    st.markdown(..., unsafe_allow_html=True). Anything from the jobs API,
+    the resume, or the LLM is untrusted and must pass through here."""
+    return html.escape(str(value if value is not None else ""))
+
+
+def safe_url(url):
+    """Allow only http(s) links through to hrefs. Blocks javascript:, data:,
+    and other script-bearing schemes. Returns '#' for anything suspicious."""
+    u = str(url or "").strip()
+    if u.lower().startswith(("https://", "http://")):
+        return html.escape(u, quote=True)
+    return "#"
 
 
 # ── RESUME ENGINE (Gemini-powered) ────────────────────────────────────────────
@@ -64,6 +90,11 @@ RESUME:
 
 def analyse_resume(uploaded_file, api_key):
     """Read a PDF resume, ask Gemini to understand it, return matched categories."""
+    # 0. size guard BEFORE we parse anything
+    size = getattr(uploaded_file, "size", None)
+    if size is not None and size > MAX_RESUME_BYTES:
+        return {"ok": False, "error": "That PDF is too large (max 5 MB)."}
+
     # 1. extract text from the PDF
     if not PYPDF_OK:
         return {"ok": False, "error": "pypdf not installed"}
@@ -90,6 +121,7 @@ def analyse_resume(uploaded_file, api_key):
             raw = (resp.text or "").replace("```json", "").replace("```", "").strip()
             data = json.loads(raw)
             cats = [c for c in data.get("categories", []) if c in ADZUNA_CATEGORIES]
+            # summary is free text from the LLM; treat as untrusted downstream.
             return {"ok": True, "categories": cats, "summary": data.get("summary", "")}
         except Exception as e:
             last_err = str(e)
@@ -97,7 +129,8 @@ def analyse_resume(uploaded_file, api_key):
             if "503" in last_err or "429" in last_err or "UNAVAILABLE" in last_err:
                 time.sleep(2 * (attempt + 1))  # 2s, 4s, 6s
                 continue
-            return {"ok": False, "error": f"AI analysis failed: {last_err[:120]}"}
+            logger.warning("Gemini analysis failed: %s", last_err)
+            return {"ok": False, "error": "AI analysis failed. Please try again."}
     return {"ok": False, "error": "Matching is busy right now. Please try again in a moment."}
 
 # ── API CREDENTIALS ───────────────────────────────────────────────────────────
@@ -198,6 +231,10 @@ def render_growth_panel(matched_cats, max_cards=3):
     matched_cats: ordered list of Adzuna category strings (resume match first,
     else the user's chosen interest filters). Only categories we have curated
     learning options for are shown, capped at max_cards.
+
+    Note: catalog labels/URLs are our own trusted constants, but we still escape
+    on output as defence-in-depth so this stays safe if the catalog ever grows
+    to include externally-sourced entries.
     """
     shown = [c for c in matched_cats if c in COURSE_CATALOG][:max_cards]
     if not shown:
@@ -207,9 +244,9 @@ def render_growth_panel(matched_cats, max_cards=3):
         tag = "Free" if is_free else "Paid"
         tag_cls = "tag-free" if is_free else "tag-paid"
         return (
-            f'<a class="course-row" href="{url}" target="_blank" rel="noopener">'
+            f'<a class="course-row" href="{safe_url(url)}" target="_blank" rel="noopener">'
             f'<span class="course-label"><span class="course-tag {tag_cls}">{tag}</span>'
-            f'{label}</span><span class="course-ext">↗</span></a>'
+            f'{safe(label)}</span><span class="course-ext">↗</span></a>'
         )
 
     cards = []
@@ -223,7 +260,7 @@ def render_growth_panel(matched_cats, max_cards=3):
         cards.append(
             f'<div class="grow-card"><div class="grow-card-head">'
             f'<span class="grow-card-icon">{icon}</span>'
-            f'<span class="grow-card-title">{nice}</span></div>'
+            f'<span class="grow-card-title">{safe(nice)}</span></div>'
             f'<div class="grow-rows">{rows}</div></div>'
         )
 
@@ -261,19 +298,23 @@ def fetch_jobs(employer_name, region, max_results=30):
         r.raise_for_status()
         raw = r.json().get("results", [])
     except Exception as e:
-        st.error(f"Couldn't fetch jobs for {employer_name}: {e}")
+        # Log the detail server-side; show the user a generic message only.
+        logger.warning("Adzuna fetch failed for %s: %s", employer_name, e)
+        st.error(f"Couldn't fetch jobs for {safe(employer_name)} right now.")
         return []
     jobs = []
     for j in raw:
+        # Escape every field at ingestion. These come from third-party feeds
+        # Adzuna aggregates, so they are untrusted and must not carry raw HTML.
         jobs.append({
-            "title": j.get("title", ""),
-            "employer": j.get("company", {}).get("display_name", ""),
-            "category": j.get("category", {}).get("label", "Other/General Jobs"),
-            "location": j.get("location", {}).get("display_name", ""),
-            "contract": (j.get("contract_time") or "n/a").replace("_", "-"),
-            "created": j.get("created", "")[:10],
-            "url": j.get("redirect_url", ""),
-            "matched_employer": employer_name,
+            "title": safe(j.get("title", "")),
+            "employer": safe(j.get("company", {}).get("display_name", "")),
+            "category": safe(j.get("category", {}).get("label", "Other/General Jobs")),
+            "location": safe(j.get("location", {}).get("display_name", "")),
+            "contract": safe((j.get("contract_time") or "n/a").replace("_", "-")),
+            "created": safe(j.get("created", "")[:10]),
+            "url": j.get("redirect_url", ""),  # sanitised at render via safe_url()
+            "matched_employer": safe(employer_name),
         })
     return jobs
 
@@ -752,6 +793,8 @@ with st.expander("📄 Smart match · upload your resume to match jobs to your s
                 st.success(f"Best match → **{top}**"
                            + (f" +{len(resume_cats)-1} more" if len(resume_cats) > 1 else ""))
                 if result.get("summary"):
+                    # summary is LLM free text; st.caption renders as plain text
+                    # (not HTML), so it is safe to pass through directly.
                     st.caption(f"💡 {result['summary']}")
                 st.markdown("**All matched areas:** " + " · ".join(resume_cats))
             elif result["ok"]:
@@ -765,14 +808,16 @@ with st.expander("📄 Smart match · upload your resume to match jobs to your s
 
 
 # ── UNIVERSITY BANNER ─────────────────────────────────────────────────────────
+# uni fields come from our own employers.json (trusted), but escape anyway as
+# defence-in-depth so a future data edit can't introduce markup.
 qs_html = (f'<div class="qs-badge"><span class="label">QS World 2026</span>'
-           f'<span class="num">#{uni["qs"]}</span></div>') if uni.get("qs") else \
+           f'<span class="num">#{safe(uni["qs"])}</span></div>') if uni.get("qs") else \
           '<div class="qs-badge"><span class="label">QS World 2026</span><span class="num">NR</span></div>'
 st.markdown(f"""
 <div class="uni-banner">
   <div>
-    <div class="uni-name">{uni['name']}</div>
-    <div class="uni-loc">📍 {uni['city']}, {uni['state']} · {uni['region']}</div>
+    <div class="uni-name">{safe(uni['name'])}</div>
+    <div class="uni-loc">📍 {safe(uni['city'])}, {safe(uni['state'])} · {safe(uni['region'])}</div>
   </div>
   {qs_html}
 </div>
@@ -838,17 +883,18 @@ visible.sort(key=lambda j: j["created"], reverse=True)
 st.markdown(f'<div class="section-label">Results</div>', unsafe_allow_html=True)
 st.markdown(f'<span class="count-big">{len(visible)}</span> '
             f'<span style="color:var(--muted)">live job{"s" if len(visible)!=1 else ""}'
-            f'{" at " + chosen_employer if chosen_employer != "All employers" else ""}</span>',
+            f'{" at " + safe(chosen_employer) if chosen_employer != "All employers" else ""}</span>',
             unsafe_allow_html=True)
 st.write("")
 
 if not visible:
     st.info("No jobs match this filter right now. Try removing the interest filter, "
-            "or choose **All employers** in the sidebar.")
+            "or choose **All employers** above.")
 else:
     for j in visible:
         col1, col2 = st.columns([5, 1])
         with col1:
+            # All j[...] values were escaped at ingestion in fetch_jobs().
             st.markdown(f"""
             <div class="job-card">
               <div class="job-title">{j['title']}</div>
@@ -861,7 +907,8 @@ else:
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            st.link_button("Apply ↗", j["url"], use_container_width=True)
+            # safe_url() guarantees an http(s) scheme; blocks javascript:/data:.
+            st.link_button("Apply ↗", safe_url(j["url"]), use_container_width=True)
 
 # ── GROW YOUR SKILLS ──────────────────────────────────────────────────────────
 # Drive the panel off the resume match first (most personalised), else off the

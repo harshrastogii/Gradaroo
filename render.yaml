@@ -4,7 +4,13 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+    # XSRF protection is left ON (Streamlit's default). The resume upload is a
+    # state-changing action, so we want CSRF defence in production.
+    # CORS is also left at its secure default. If a future reverse-proxy / custom
+    # domain setup genuinely needs CORS relaxed, change it there deliberately —
+    # not blanket-disabled here.
+    # maxUploadSize caps uploads at 5 MB, matching the in-app guard in app.py.
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.maxUploadSize 5
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
