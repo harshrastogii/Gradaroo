@@ -14,3 +14,5 @@ sample_resume.pdf
 test_*.py
 anaconda_projects/
 *.ipynb
+*.backup
+*.bak
