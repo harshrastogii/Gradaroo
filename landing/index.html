@@ -147,6 +147,8 @@
       transition: transform var(--transition-fast);
       min-width: fit-content;
       padding: 4px 0;
+      text-decoration: none;
+      color: var(--ink);
     }
     .wordmark:hover { transform: scale(1.02); }
     .wordmark .go {
@@ -156,6 +158,10 @@
       color: transparent;
       font-style: italic;
       padding-right: 8px; /* Extra padding for logo italic overhang */
+    }
+    .topnav {
+      display: flex;
+      align-items: center;
     }
     .topnav a {
       color: var(--ink);
@@ -179,6 +185,16 @@
     }
     .topnav a:hover { color: var(--accent-core); }
     .topnav a:hover::after { width: 100%; }
+    /* Primary nav CTA so "Find jobs" reads as the main action */
+    .topnav a.nav-cta {
+      background: var(--accent-gradient);
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(188, 69, 20, 0.28);
+    }
+    .topnav a.nav-cta::after { display: none; }
+    .topnav a.nav-cta:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(188, 69, 20, 0.4); }
 
     /* ── FIXED HERO + HEADING STYLES (Resolves "graduates" split + "actually" cropping) ──────────── */
     .hero {
@@ -572,6 +588,25 @@
       line-height: 1.7;
     }
 
+    /* Final CTA band — gives the page a strong, single closing action and a
+       smoother hand-off into the app (UX: reduce the "second hero" repetition). */
+    .cta-band {
+      margin: 8px 0 0;
+      background: linear-gradient(135deg, #1c1917 0%, #33241a 100%);
+      border-radius: 24px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: var(--shadow-hover);
+    }
+    .cta-band h2 { color: #fff; margin: 0; }
+    .cta-band p { color: #c9c0b4; max-width: 560px; margin: 14px auto 0; font-size: 16px; }
+    .cta-band .cta-row { margin-top: 28px; }
+
+    /* Contact line in footer */
+    .foot-links { font-size: 13px; margin-top: 8px; }
+    .foot-links a { color: var(--accent-core); font-weight: 600; text-decoration: none; }
+    .foot-links a:hover { text-decoration: underline; }
+
     /* Footer */
     footer {
       border-top: 1px solid var(--line);
@@ -605,9 +640,11 @@
     @media (max-width: 768px) {
       .hero { padding-top: 36px; }
       .topnav a { margin-left: 16px; font-size: 13px; }
+      .topnav a.nav-cta { padding: 8px 14px; }
       .stats { flex-direction: column; gap: 20px; padding: 20px 12px; }
       .stat + .stat { border-left: none; border-top: 1px solid var(--line); padding-top: 20px; }
       .foot-row { flex-direction: column; align-items: flex-start; }
+      .cta-band { padding: 36px 22px; }
       h1 {
         font-size: clamp(2rem, 7vw, 3.2rem);
         max-width: 100%;
@@ -632,10 +669,11 @@
   <div class="topbar-wrap">
     <header class="wrap">
       <div class="topbar">
-        <div class="wordmark">Grad<span class="go">aroo</span></div>
+        <a class="wordmark" href="/">Grad<span class="go">aroo</span></a>
         <nav class="topnav">
-          <a href="https://app.gradaroo.com">Find jobs</a>
+          <a href="#how">How it works</a>
           <a href="https://app.gradaroo.com/About_Gradaroo">About</a>
+          <a class="nav-cta" href="https://app.gradaroo.com">Find jobs →</a>
         </nav>
       </div>
     </header>
@@ -819,8 +857,16 @@
           </div>
         </details>
       </div>
-      <div class="cta-row fade-up delay-2" style="justify-content:flex-start;margin-top:32px;">
-        <a class="btn btn-primary" href="https://app.gradaroo.com">Start your search →</a>
+    </section>
+
+    <!-- Final CTA band (single strong closing action) -->
+    <section class="wrap">
+      <div class="cta-band fade-up">
+        <h2>Ready to find your start?</h2>
+        <p>Pick your university and see where its graduates actually work — with live openings you can apply to right now.</p>
+        <div class="cta-row" style="justify-content:center;">
+          <a class="btn btn-primary" href="https://app.gradaroo.com">Start your search →</a>
+        </div>
       </div>
     </section>
   </main>
@@ -828,7 +874,14 @@
   <footer>
     <div class="wrap">
       <div class="foot-row">
-        <div class="wordmark" style="font-size:22px;min-width:fit-content;">Grad<span class="go" style="padding-right:8px;">aroo</span></div>
+        <div>
+          <a class="wordmark" href="/" style="font-size:22px;min-width:fit-content;display:inline-block;">Grad<span class="go" style="padding-right:8px;">aroo</span></a>
+          <div class="foot-links">
+            <a href="https://app.gradaroo.com">Find jobs</a> ·
+            <a href="https://app.gradaroo.com/About_Gradaroo">About</a> ·
+            <a href="mailto:harshrastogii@zohomail.com.au">Contact</a>
+          </div>
+        </div>
         <div class="foot-credits">Employer data compiled from public sources · Job listings via the Adzuna API · QS World University Rankings 2026 · "Apply" opens the original posting.</div>
       </div>
       <div class="foot-note">Built by Harsh Rastogi. A smarter, honest way to start a graduate job search.</div>

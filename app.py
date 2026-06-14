@@ -12,6 +12,7 @@ import json
 import logging
 import requests
 import streamlit as st
+import streamlit.components.v1 as components
 
 # resume parsing is optional - app still runs if these aren't installed
 try:
@@ -289,16 +290,182 @@ def fetch_jobs(employer_name, region, max_results=30):
 st.set_page_config(page_title="Gradaroo", page_icon="🎓",
                    layout="centered", initial_sidebar_state="collapsed")
 
+# ── BRANDED LOADING CURTAIN ───────────────────────────────────────────────────
+# On first load the browser briefly shows Streamlit's bare shell (the sidebar
+# chevron, an empty frame) before our Python paints the real UI. We cover that
+# raw-Streamlit flash with a branded curtain. See the gated block below for the
+# full two-layer explanation.
+
+# ── ALWAYS-ON: hide Streamlit chrome (runs on every rerun) ────────────────────
 st.markdown("""
 <style>
 [data-testid="stSidebarNav"] { display: none; }
 [data-testid="stSidebar"] { display: none; }
 [data-testid="stSidebarCollapsedControl"] { display: none; }
+[data-testid="collapsedControl"] { display: none; }
 [data-testid="stToolbar"] { display: none; }
 [data-testid="stStatusWidget"] { display: none; }
+[data-testid="stDecoration"] { display: none; }
 header { display: none; }
+
+/* The loader injector runs from a 0x0 components.html iframe. Collapse its
+   Streamlit wrapper entirely so it never adds a gap at the top of the page. */
+[data-testid="stIFrame"][height="0"],
+iframe[title="streamlit_component_iframe"][height="0"] { display: none !important; }
+[data-testid="stElementContainer"]:has(> iframe[height="0"]) {
+  display: none !important; height: 0 !important; margin: 0 !important; padding: 0 !important;
+}
 </style>
 """, unsafe_allow_html=True)
+
+# ── BRANDED LOADING CURTAIN (first load only) ─────────────────────────────────
+# Problem: on first load the browser shows Streamlit's bare shell (the sidebar
+# chevron, empty frame) for ~1-2s before our Python paints the real UI. That
+# raw-Streamlit flash looks unpolished.
+#
+# Fix, in two cooperating layers:
+#   1) A CSS-only curtain paints a branded full-screen cover the instant the
+#      stylesheet applies — no JS needed, so it's up before Streamlit connects.
+#   2) A components.html injector lifts an identical curtain into the TOP-LEVEL
+#      document so it covers the whole page during boot, then fades it out once
+#      our real hero element has rendered (with a safety timeout).
+#
+# We only render the curtain on the FIRST script run of a session. On reruns
+# (changing the dropdown, uploading a resume, etc.) Streamlit re-executes this
+# file top-to-bottom; without this gate the curtain would re-flash mid-session.
+_first_load = "booted" not in st.session_state
+if _first_load:
+    st.session_state["booted"] = True
+
+    st.markdown("""
+<style>
+@keyframes gr-curtain-autohide {
+  0%, 92% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+#gradaroo-boot-curtain {
+  position: fixed; inset: 0; z-index: 2147483646;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 22px;
+  background: #faf6f0;
+  background-image: radial-gradient(circle at 50% 38%, #fff5ed 0%, #faf6f0 60%);
+  font-family: 'Newsreader', Georgia, serif;
+  /* auto-hide after ~6.5s as a hard fail-safe; JS normally removes it sooner */
+  animation: gr-curtain-autohide 6.5s ease forwards;
+}
+#gradaroo-boot-curtain .gr-mark {
+  font-size: 40px; font-weight: 600; letter-spacing: -0.02em; color: #1c1917;
+}
+#gradaroo-boot-curtain .gr-mark .go { color: #bc4514; font-style: italic; }
+#gradaroo-boot-curtain .gr-dots { display: flex; gap: 9px; margin-top: 2px; }
+#gradaroo-boot-curtain .gr-dots span {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: linear-gradient(135deg, #bc4514 0%, #e8742c 100%);
+  animation: gr-boot-bounce 1.4s ease-in-out infinite both;
+}
+#gradaroo-boot-curtain .gr-dots span:nth-child(1) { animation-delay: -0.32s; }
+#gradaroo-boot-curtain .gr-dots span:nth-child(2) { animation-delay: -0.16s; }
+#gradaroo-boot-curtain .gr-tag {
+  font-family: 'Libre Franklin', -apple-system, sans-serif;
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 700; color: #756c5f;
+}
+@keyframes gr-boot-bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #gradaroo-boot-curtain { animation: none; }
+  #gradaroo-boot-curtain .gr-dots span { animation: none; opacity: 0.7; }
+}
+</style>
+
+<!-- Layer 1 curtain markup (lives in the app view; covers the bare frame).
+     Note: <script> in st.markdown is stripped by Streamlit's sanitizer, so this
+     layer is intentionally CSS-only. It is removed promptly by layer 2's script
+     on normal loads, and self-hides via the gr-curtain-autohide keyframe as a
+     hard fail-safe if layer 2 is ever unavailable. -->
+<div id="gradaroo-boot-curtain">
+  <div class="gr-mark">Grad<span class="go">aroo</span></div>
+  <div class="gr-dots"><span></span><span></span><span></span></div>
+  <div class="gr-tag">Loading live graduate jobs…</div>
+</div>
+""", unsafe_allow_html=True)
+
+    # Layer 2: lift an identical curtain into the TOP document and remove both
+    # once the real hero has painted. Runs from a tiny component iframe but acts
+    # on window.parent, so it covers the whole Streamlit page during boot.
+    components.html("""
+<script>
+(function () {
+  var doc;
+  try { doc = window.parent.document; } catch (e) { return; }  // same-origin only
+  if (!doc) return;
+
+  var ID = "gradaroo-boot-curtain-top";
+  if (doc.getElementById(ID)) return;  // already injected this session
+
+  // Inject styles into the top document (separate from the app-view curtain CSS).
+  var style = doc.createElement("style");
+  style.textContent = ""
+    + "#" + ID + "{position:fixed;inset:0;z-index:2147483647;display:flex;"
+    + "flex-direction:column;align-items:center;justify-content:center;gap:22px;"
+    + "background:#faf6f0;background-image:radial-gradient(circle at 50% 38%,#fff5ed 0%,#faf6f0 60%);"
+    + "font-family:'Newsreader',Georgia,serif;transition:opacity .55s ease,visibility .55s ease;}"
+    + "#" + ID + " .grm{font-size:42px;font-weight:600;letter-spacing:-.02em;color:#1c1917;}"
+    + "#" + ID + " .grm .go{color:#bc4514;font-style:italic;}"
+    + "#" + ID + " .grd{display:flex;gap:9px;margin-top:2px;}"
+    + "#" + ID + " .grd span{width:9px;height:9px;border-radius:50%;"
+    + "background:linear-gradient(135deg,#bc4514 0%,#e8742c 100%);"
+    + "animation:grbounce 1.4s ease-in-out infinite both;}"
+    + "#" + ID + " .grd span:nth-child(1){animation-delay:-.32s;}"
+    + "#" + ID + " .grd span:nth-child(2){animation-delay:-.16s;}"
+    + "#" + ID + " .grt{font-family:'Libre Franklin',-apple-system,sans-serif;"
+    + "font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#756c5f;}"
+    + "@keyframes grbounce{0%,80%,100%{transform:scale(.6);opacity:.3;}40%{transform:scale(1);opacity:1;}}"
+    + "@media (prefers-reduced-motion: reduce){#" + ID + " .grd span{animation:none;opacity:.7;}}";
+  doc.head.appendChild(style);
+
+  var curtain = doc.createElement("div");
+  curtain.id = ID;
+  curtain.innerHTML =
+      '<div class="grm">Grad<span class="go">aroo</span></div>'
+    + '<div class="grd"><span></span><span></span><span></span></div>'
+    + '<div class="grt">Loading live graduate jobs…</div>';
+  doc.body.appendChild(curtain);
+
+  var done = false;
+  function reveal() {
+    if (done) return;
+    done = true;
+    // fade the top curtain
+    curtain.style.opacity = "0";
+    curtain.style.visibility = "hidden";
+    setTimeout(function () { if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain); }, 650);
+    // also drop the in-app (layer 1) curtain immediately
+    var inApp = doc.getElementById("gradaroo-boot-curtain");
+    if (inApp) { inApp.style.transition = "opacity .4s ease"; inApp.style.opacity = "0";
+      setTimeout(function () { if (inApp && inApp.parentNode) inApp.parentNode.removeChild(inApp); }, 450); }
+  }
+
+  // Reveal as soon as our real hero (.hero-wrap) has rendered in the app view.
+  function ready() {
+    return doc.querySelector(".hero-wrap") || doc.querySelector(".uni-banner");
+  }
+  if (ready()) {
+    // give the paint a beat so we don't flash a half-painted frame
+    setTimeout(reveal, 250);
+  } else {
+    var obs = new MutationObserver(function () {
+      if (ready()) { obs.disconnect(); setTimeout(reveal, 200); }
+    });
+    obs.observe(doc.body, { childList: true, subtree: true });
+    // hard safety timeout: never let the curtain outstay its welcome
+    setTimeout(function () { try { obs.disconnect(); } catch (e) {} reveal(); }, 5000);
+  }
+})();
+</script>
+""", height=0, width=0)
 
 # ── CUSTOM STYLING ────────────────────────────────────────────────────────────
 st.markdown("""
@@ -333,7 +500,7 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 0 8px; }
 .topbar .wordmark {
   font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 600;
-  letter-spacing: -0.02em; color: var(--ink);
+  letter-spacing: -0.02em; color: var(--ink); text-decoration: none !important;
 }
 .topbar .wordmark .go { color: var(--accent); font-style: italic; }
 .topbar-links { display: flex; align-items: center; gap: 18px; }
@@ -359,9 +526,9 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 }
 .hero-chip .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
 .hero-wrap h1 {
-  font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 54px;
-  line-height: 1.06; letter-spacing: -0.025em; color: var(--ink);
-  margin: 22px auto 0; max-width: 780px;
+  font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 50px;
+  line-height: 1.08; letter-spacing: -0.025em; color: var(--ink);
+  margin: 18px auto 0; max-width: 760px;
 }
 .hero-wrap h1 em { font-style: italic; color: var(--accent); }
 .hero-sub {
@@ -371,17 +538,17 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 /* ---- STAT STRIP ---- */
-.stat-strip { display: flex; justify-content: center; margin: 28px auto 2px; max-width: 660px; }
+.stat-strip { display: flex; justify-content: center; margin: 24px auto 2px; max-width: 660px; }
 .stat { flex: 1; padding: 2px 18px; text-align: center; }
 .stat + .stat { border-left: 1px solid var(--line); }
-.stat .n { font-family: 'Newsreader', serif; font-size: 30px; font-weight: 600; color: var(--ink); }
+.stat .n { font-family: 'Newsreader', serif; font-size: 28px; font-weight: 600; color: var(--ink); }
 .stat .n em { font-style: italic; color: var(--accent); }
 .stat .l { font-size: 10.5px; text-transform: uppercase; letter-spacing: .14em;
   color: var(--muted); font-weight: 700; margin-top: 3px; }
 
 /* ---- STEP CHIPS ---- */
 .step-chips { display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
-  gap: 10px; margin: 24px 0 10px; }
+  gap: 10px; margin: 22px 0 6px; }
 .step-chip {
   display: inline-flex; align-items: center; gap: 9px;
   background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
@@ -396,26 +563,51 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 }
 .step-arrow { color: var(--muted); font-size: 14px; }
 
-/* ---- SMART MATCH SECTION (FIXED) ---- */
+/* ============================================================================
+   SMART MATCH  —  single unified card (FIX 1, 2, 3)
+   The whole section is ONE Streamlit container. We anchor on .smart-match-root
+   and style the container that DIRECTLY contains it, so the header, uploader,
+   results and security note all sit inside one bordered, rounded card with no
+   empty second box and no white gap.
+   ============================================================================ */
+
+/* The vertical block whose DIRECT child element-container holds our anchor
+   becomes the card. The '>' is important: it matches ONLY the immediate
+   wrapping container (the one created by st.container()), not every ancestor
+   block up the page — so the rest of the page is untouched. */
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] > .smart-match-root) {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  padding: 22px 24px;
+  transition: box-shadow .2s ease;
+}
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] > .smart-match-root):hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* The anchor itself must take no space (kills the white gap / empty box). */
+.smart-match-root { display: none; }
+[data-testid="stElementContainer"]:has(> .smart-match-root) {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  height: 0 !important;
+}
+
+/* Header row inside the card */
 .smart-match-header {
-  background: var(--grad-soft);
-  padding: 18px 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  border: 1px solid var(--line);
-  border-bottom: none;
-  border-radius: 20px 20px 0 0;
-  box-shadow: var(--shadow-sm);
-  transition: all .2s ease;
-  margin-bottom: -1px;
-  z-index: 2;
-  position: relative;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 .smart-match-icon {
-  font-size: 28px;
-  width: 48px;
-  height: 48px;
+  font-size: 24px;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -423,10 +615,10 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(188,69,20,.25);
 }
-.smart-match-header-text { flex: 1; }
+.smart-match-header-text { flex: 1; min-width: 0; }
 .smart-match-title {
   font-family: 'Newsreader', serif;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 600;
   color: var(--ink);
 }
@@ -434,42 +626,18 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   font-size: 13px;
   color: var(--muted);
   margin-top: 2px;
+  line-height: 1.45;
 }
 
-/* Smart Match Content Container (anchored via .smart-match-root) */
-div:has(> .smart-match-root) {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 0 0 20px 20px;
-  box-shadow: var(--shadow-sm);
-  padding: 24px;
-  margin-top: 0;
-  transition: all .2s ease;
-}
-
-/* Hover effect for entire card */
-.smart-match-header:hover,
-div:has(> .smart-match-root):hover {
-  box-shadow: var(--shadow-md);
-}
-div:has(> .smart-match-root):hover {
-  transform: translateY(-2px);
-}
-.smart-match-header:hover + div div:has(> .smart-match-root) {
-  transform: translateY(-2px);
-}
-
-/* File Uploader Styling (integrated) */
-[data-testid="stFileUploader"] {
-  margin: 0 0 16px 0;
-}
+/* File Uploader Styling (integrated, no extra outer chrome) */
+[data-testid="stFileUploader"] { margin: 0 0 4px 0; }
 [data-testid="stFileUploader"] section,
 [data-testid="stFileUploaderDropzone"] {
   background: var(--grad-soft) !important;
   border: 2px dashed var(--accent-2) !important;
   border-radius: 16px !important;
-  min-height: 120px !important;
-  padding: 20px !important;
+  min-height: 110px !important;
+  padding: 18px !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -482,19 +650,29 @@ div:has(> .smart-match-root):hover {
   border-color: var(--accent) !important;
   background: var(--accent-soft) !important;
 }
-[data-testid="stFileUploader"] section * {
-  color: var(--ink) !important;
-}
-[data-testid="stFileUploader"] button {
+[data-testid="stFileUploader"] section * { color: var(--ink) !important; }
+
+/* FIX 2: upload "Browse files" button — white text on the gradient, forced on
+   every child node (Streamlit nests the label in <p>/<span>/<div>). */
+[data-testid="stFileUploader"] button,
+[data-testid="stBaseButton-secondary"] {
   background: var(--grad) !important;
-  color: #fff !important;
   border: none !important;
   border-radius: 999px !important;
   font-weight: 600 !important;
-  padding: 8px 20px !important;
+  padding: 8px 22px !important;
   box-shadow: 0 4px 12px rgba(188,69,20,.25) !important;
   transition: all .2s ease !important;
   margin-top: 8px !important;
+}
+[data-testid="stFileUploader"] button,
+[data-testid="stFileUploader"] button *,
+[data-testid="stFileUploader"] button p,
+[data-testid="stFileUploader"] button span,
+[data-testid="stFileUploader"] button div {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  fill: #ffffff !important;
 }
 [data-testid="stFileUploader"] button:hover {
   transform: translateY(-1px) !important;
@@ -508,151 +686,98 @@ div:has(> .smart-match-root):hover {
   margin: 12px 0 0 0 !important;
 }
 [data-testid="stFileUploaderFile"] * { color: var(--ink) !important; }
+/* the little delete (x) icon button on the uploaded-file chip stays neutral */
+[data-testid="stFileUploaderDeleteBtn"] button { background: transparent !important; box-shadow: none !important; }
+[data-testid="stFileUploaderDeleteBtn"] button * { color: var(--muted) !important; -webkit-text-fill-color: var(--muted) !important; fill: var(--muted) !important; }
 
 /* Analysis States */
 .analysis-loading {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 20px 24px;
+  padding: 18px 22px;
   background: var(--grad-soft);
-  border-radius: 16px;
-  margin: 12px 0;
+  border-radius: 14px;
+  margin: 14px 0 2px;
   border: 1px solid var(--line);
 }
 .loading-spinner {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border: 3px solid rgba(188,69,20,0.15);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   flex-shrink: 0;
 }
-.loading-text {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-}
+.loading-text { font-size: 15px; font-weight: 600; color: var(--ink); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .analysis-success {
   background: linear-gradient(135deg, #f0f7f0 0%, #f5faf5 100%);
   border: 1px solid #c6e4c6;
   border-radius: 16px;
-  padding: 20px 24px;
-  margin: 12px 0;
+  padding: 20px 22px;
+  margin: 14px 0 2px;
   animation: popIn .3s ease;
 }
 @keyframes popIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-.success-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
+.success-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .success-icon {
-  font-size: 20px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #2f6b34;
-  border-radius: 50%;
-  color: white;
+  font-size: 18px; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  background: #2f6b34; border-radius: 50%; color: white;
 }
-.success-title {
-  font-weight: 700;
-  font-size: 16px;
-  color: #2f6b34;
-}
+.success-icon * { color: #fff !important; }
+.success-title { font-weight: 700; font-size: 16px; color: #2f6b34; }
 .best-match-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--grad);
-  color: white;
-  font-weight: 700;
-  font-size: 16px;
-  padding: 10px 18px;
-  border-radius: 999px;
-  margin: 8px 0 16px;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--grad); color: white; font-weight: 700; font-size: 16px;
+  padding: 10px 18px; border-radius: 999px; margin: 8px 0 14px;
   box-shadow: 0 6px 18px rgba(188,69,20,.3);
 }
+.best-match-pill, .best-match-pill * { color: #fff !important; -webkit-text-fill-color: #fff !important; }
 .match-summary {
-  font-style: italic;
-  color: #2f6b34;
-  background: rgba(47,107,52,0.05);
-  border-left: 3px solid #2f6b34;
-  padding: 12px 16px;
-  border-radius: 0 10px 10px 0;
-  margin: 12px 0;
-  font-size: 14px;
-  line-height: 1.6;
+  font-style: italic; color: #2f6b34;
+  background: rgba(47,107,52,0.05); border-left: 3px solid #2f6b34;
+  padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 12px 0;
+  font-size: 14px; line-height: 1.6;
 }
-.matched-cats-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
+.matched-cats-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .matched-cat-tag {
-  background: white;
-  border: 1px solid #c6e4c6;
-  color: #2f6b34;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 600;
+  background: white; border: 1px solid #c6e4c6; color: #2f6b34;
+  padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
 }
 
 .analysis-warning {
-  background: #fff9e6;
-  border: 1px solid #f0c85c;
-  border-radius: 16px;
-  padding: 16px 20px;
-  margin: 12px 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  background: #fff9e6; border: 1px solid #f0c85c; border-radius: 16px;
+  padding: 16px 20px; margin: 14px 0 2px;
+  display: flex; align-items: flex-start; gap: 12px;
 }
 .analysis-error {
-  background: #fff0f0;
-  border: 1px solid #e8b4b4;
-  border-radius: 16px;
-  padding: 16px 20px;
-  margin: 12px 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  background: #fff0f0; border: 1px solid #e8b4b4; border-radius: 16px;
+  padding: 16px 20px; margin: 14px 0 2px;
+  display: flex; align-items: flex-start; gap: 12px;
 }
-.state-icon {
-  font-size: 18px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.state-text {
-  font-size: 14px;
-  line-height: 1.5;
-}
+.state-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.state-text { font-size: 14px; line-height: 1.5; }
 
 /* Security Note */
 .security-note {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  font-size: 12.5px;
-  color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px; padding: 12px 16px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  font-size: 12.5px; color: var(--muted);
 }
-.security-icon {
-  font-size: 16px;
-  color: var(--accent);
+.security-icon { font-size: 16px; color: var(--accent); flex-shrink: 0; }
+
+/* setup hint (deps missing) */
+.setup-hint { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.setup-hint-title { font-weight: 700; font-size: 16px; color: var(--ink); }
+.setup-code {
+  margin-top: 10px; padding: 12px 16px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 10px;
+  font-family: monospace; font-size: 13px; color: var(--ink);
 }
 
 /* ---- UNIVERSITY BANNER ---- */
@@ -731,8 +856,23 @@ div:has(> .smart-match-root):hover {
 ul[role="listbox"] li:hover {
   background: var(--accent-soft) !important; color: var(--accent) !important;
 }
-[data-baseweb="tag"] { background: var(--accent) !important; }
-[data-baseweb="tag"] span { color: #ffffff !important; }
+
+/* FIX 4: multiselect chosen tags — accent background with WHITE text on every
+   child node (label + the little close 'x' svg), for proper contrast. */
+[data-baseweb="tag"] {
+  background: var(--accent) !important;
+  border-radius: 999px !important;
+}
+[data-baseweb="tag"],
+[data-baseweb="tag"] *,
+[data-baseweb="tag"] span,
+[data-baseweb="tag"] div {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+[data-baseweb="tag"] svg { fill: #ffffff !important; color: #ffffff !important; }
+[data-baseweb="tag"] [role="button"]:hover { background: rgba(255,255,255,0.22) !important; }
+
 [data-baseweb="select"] > div {
   background: #ffffff !important;
   border: 1px solid var(--line) !important;
@@ -744,6 +884,10 @@ ul[role="listbox"] li:hover {
   box-shadow: 0 0 0 3px rgba(232,116,44,0.15) !important; }
 [data-baseweb="select"] > div > div, [data-baseweb="select"] span {
   color: var(--ink) !important; -webkit-text-fill-color: var(--ink) !important;
+}
+/* but keep the chosen-tag text white even though it lives inside the select */
+[data-baseweb="select"] [data-baseweb="tag"] span {
+  color: #ffffff !important; -webkit-text-fill-color: #ffffff !important;
 }
 
 /* ---- GROW YOUR SKILLS PANEL ---- */
@@ -802,6 +946,9 @@ ul[role="listbox"] li:hover {
 }
 .site-footer .footer-wordmark .go { color: var(--accent); font-style: italic; }
 .site-footer .footer-credits { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 520px; }
+.site-footer .footer-links { font-size: 12.5px; margin-top: 6px; }
+.site-footer .footer-links a { color: var(--accent) !important; font-weight: 600; text-decoration: none; }
+.site-footer .footer-links a:hover { text-decoration: underline; }
 .site-footer .footer-note {
   font-family: 'Newsreader', serif; font-style: italic;
   font-size: 12.5px; color: var(--muted); padding: 6px 0 16px;
@@ -814,7 +961,7 @@ ul[role="listbox"] li:hover {
 @media (max-width: 768px) {
   .hero-wrap { padding-top: 18px; }
   .topbar .wordmark { font-size: 26px !important; }
-  .hero-wrap h1 { font-size: 33px !important; }
+  .hero-wrap h1 { font-size: 32px !important; }
   .hero-sub { font-size: 14px !important; }
   .stat .n { font-size: 22px !important; }
   .stat { padding: 2px 10px !important; }
@@ -826,11 +973,10 @@ ul[role="listbox"] li:hover {
   .uni-banner .uni-name { font-size: 20px !important; }
   .job-title { font-size: 17px !important; }
   .site-footer .footer-row { flex-direction: column; align-items: flex-start; }
-  .smart-match-header { flex-direction: row; align-items: center; gap: 12px; padding: 16px; }
-  .smart-match-icon { font-size: 22px; width: 40px; height: 40px; }
+  .smart-match-header { gap: 12px; }
+  .smart-match-icon { font-size: 22px; width: 42px; height: 42px; }
   .smart-match-title { font-size: 18px; }
   .smart-match-subtitle { font-size: 12px; }
-  div:has(> .smart-match-root) { padding: 16px; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -854,35 +1000,35 @@ def sort_key(u):
 universities_sorted = sorted(universities, key=sort_key)
 
 
-# ── TOP BAR + HERO ────────────────────────────────────────────────────────────
+# ── TOP BAR ───────────────────────────────────────────────────────────────────
+# Note: this is the APP. The wordmark links back to the landing page so the two
+# surfaces feel like one product (see UX review). The hero is intentionally
+# lighter than the landing hero to avoid a repetitive "second hero".
 n_unis = len(universities_sorted)
 n_emps = sum(len(u.get("employers", [])) for u in universities_sorted)
 st.markdown(f"""
 <div class="topbar">
-  <div class="wordmark">Grad<span class="go">aroo</span></div>
+  <a class="wordmark" href="https://gradaroo.com" target="_self">Grad<span class="go">aroo</span></a>
   <div class="topbar-links">
+    <a class="topnav-link" href="https://gradaroo.com" target="_self">Home</a>
     <a class="topnav-link" href="/About_Gradaroo" target="_self">About</a>
     <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
   </div>
 </div>
-<div class="hero-wrap">
+""", unsafe_allow_html=True)
+
+# Compact app-header (NOT a repeat of the landing hero). One line of intent +
+# the live stats, then straight into the tool.
+st.markdown(f"""
+<div class="hero-wrap" style="padding: 18px 0 4px;">
   <div class="hero-chip"><span class="live-dot"></span>Live graduate jobs · Australia</div>
-  <h1>Start your search where graduates <em>actually</em> get hired.</h1>
-  <div class="hero-sub">Pick your university, see the organisations its grads work for,
-    and apply to live openings. Or upload your resume and let Gradaroo match jobs to your skills.</div>
+  <h1 style="font-size:38px; margin-top:14px;">Let's find where <em>you</em> fit.</h1>
+  <div class="hero-sub">Pick your university below to see where its graduates work — then
+    browse live openings, or smart-match jobs to your resume.</div>
   <div class="stat-strip">
     <div class="stat"><div class="n">{n_unis}</div><div class="l">Universities</div></div>
     <div class="stat"><div class="n">{n_emps}</div><div class="l">Employers</div></div>
     <div class="stat"><div class="n"><em>Live</em></div><div class="l">Updated daily</div></div>
-  </div>
-  <div class="step-chips">
-    <span class="step-chip"><span class="n">1</span>Pick your university</span>
-    <span class="step-arrow">→</span>
-    <span class="step-chip"><span class="n">2</span>See where its grads work</span>
-    <span class="step-arrow">→</span>
-    <span class="step-chip"><span class="n">3</span>Apply or smart-match</span>
-    <span class="step-arrow">→</span>
-    <span class="step-chip"><span class="n">4</span>Grow your skills</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -917,46 +1063,52 @@ with c2:
         chosen_employer = None
         st.write("")
 
-# ── RESTRUCTURED SMART MATCH SECTION (FIXED) ─────────────────────────────────
+# ── SMART MATCH SECTION (single unified card) ────────────────────────────────
 resume_cats = []
 
-st.markdown('<div class="section-label">✨ Smart Match</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-label">✨ Smart Match · optional</div>', unsafe_allow_html=True)
 
-# Smart Match Header (complete, closed div - no unclosed tags!)
-st.markdown("""
-<div class="smart-match-header">
-  <div class="smart-match-icon">📄</div>
-  <div class="smart-match-header-text">
-    <div class="smart-match-title">Match jobs to your unique skills</div>
-    <div class="smart-match-subtitle">Upload your resume → AI analyzes your skills → Filters jobs to what fits you best</div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-# Smart Match Content Container (uses CSS anchor trick to style as card content)
+# Everything below lives in ONE container so the CSS renders it as a single card.
 with st.container():
-    # Anchor element for CSS to target this container
-    st.markdown('<div class="smart-match-root"></div>', unsafe_allow_html=True)
+    # Anchor: zero-size element the CSS uses to find "this container".
+    st.markdown('<span class="smart-match-root"></span>', unsafe_allow_html=True)
+
+    # Header (in-card, single block — no separate outer box)
+    st.markdown("""
+    <div class="smart-match-header">
+      <div class="smart-match-icon">📄</div>
+      <div class="smart-match-header-text">
+        <div class="smart-match-title">Match jobs to your unique skills</div>
+        <div class="smart-match-subtitle">Upload your resume → AI reads your skills → we filter jobs to what fits you best.</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     if PYPDF_OK and GENAI_OK and GEMINI_KEY:
         resume_file = st.file_uploader(
-            "hidden_label",
+            "Upload your resume (PDF)",
             type=["pdf"],
             label_visibility="collapsed",
-            key="smart_resume_upload"
+            key="smart_resume_upload",
         )
+
+        # FIX 3: loading message lives in a placeholder we clear once done.
+        status_slot = st.empty()
 
         if resume_file is not None:
             file_sig = (resume_file.name, getattr(resume_file, "size", None))
             if st.session_state.get("resume_sig") != file_sig:
-                st.markdown("""
+                status_slot.markdown("""
                 <div class="analysis-loading">
                   <div class="loading-spinner"></div>
-                  <div class="loading-text">Reading your resume and matching your skills...</div>
+                  <div class="loading-text">Reading your resume and matching your skills…</div>
                 </div>
                 """, unsafe_allow_html=True)
                 st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
                 st.session_state["resume_sig"] = file_sig
+
+            # Processing finished (cache hit or fresh) → remove the loading note.
+            status_slot.empty()
             result = st.session_state["resume_result"]
 
             if result["ok"] and result["categories"]:
@@ -980,10 +1132,8 @@ with st.container():
                   </div>
                   <div class="best-match-pill">✨ {safe(top)}</div>
                 """
-
                 if summary:
                     success_html += f'<div class="match-summary">💡 {safe(summary)}</div>'
-
                 if other_cats:
                     success_html += f"""
                     <div style="font-size: 13px; font-weight: 600; color: #2f6b34; margin-top: 4px;">
@@ -991,7 +1141,6 @@ with st.container():
                     </div>
                     <div class="matched-cats-list">{other_cats_html}</div>
                     """
-
                 success_html += "</div>"
                 st.markdown(success_html, unsafe_allow_html=True)
 
@@ -1011,7 +1160,7 @@ with st.container():
                 </div>
                 """, unsafe_allow_html=True)
 
-        # Security note (inside the styled container)
+        # Security note (inside the same card)
         st.markdown("""
         <div class="security-note">
           <span class="security-icon">🔒</span>
@@ -1021,15 +1170,13 @@ with st.container():
 
     else:
         st.markdown("""
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <div class="setup-hint">
           <span style="font-size: 24px;">🔧</span>
-          <div style="font-weight: 700; font-size: 16px; color: var(--ink);">Resume matching needs a quick setup</div>
+          <div class="setup-hint-title">Resume matching needs a quick setup</div>
         </div>
-        <div style="font-size: 14px; color: var(--muted); line-height: 1.6; padding-left: 36px;">
+        <div style="font-size: 14px; color: var(--muted); line-height: 1.6;">
           Install the required packages to enable AI-powered resume matching:
-          <div style="margin-top: 10px; padding: 12px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; font-family: monospace; font-size: 13px; color: var(--ink);">
-            pip install pypdf google-genai
-          </div>
+          <div class="setup-code">pip install pypdf google-genai</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1147,6 +1294,11 @@ st.markdown(f"""
       <div class="footer-credits">Employer data compiled from public sources ·
         Job listings via the Adzuna API · QS World University Rankings 2026 ·
         "Apply" opens the original posting.</div>
+      <div class="footer-links">
+        <a href="https://gradaroo.com" target="_self">Home</a> ·
+        <a href="/About_Gradaroo" target="_self">About</a> ·
+        <a href="mailto:harshrastogii@zohomail.com.au">Contact</a>
+      </div>
     </div>
     <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
   </div>
