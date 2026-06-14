@@ -347,6 +347,7 @@ st.markdown("""
   --accent: #bc4514;
   --accent-2: #e8742c;
   --grad: linear-gradient(135deg, #bc4514 0%, #e8742c 100%);
+  --grad-soft: linear-gradient(135deg, #f9ece2 0%, #fff5ed 100%);
   --accent-soft: #f9ece2;
   --line: #ece3d6;
   --muted: #756c5f;
@@ -413,13 +414,272 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   display: inline-flex; align-items: center; gap: 9px;
   background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
   border-radius: 999px; padding: 8px 17px; font-size: 13px; font-weight: 600; color: var(--ink);
+  transition: all .18s ease;
 }
+.step-chip:hover { border-color: var(--accent-2); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .step-chip .n {
   width: 20px; height: 20px; border-radius: 50%; background: var(--grad); color: #fff;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 700;
 }
 .step-arrow { color: var(--muted); font-size: 14px; }
+
+/* ---- SMART MATCH SECTION ---- */
+.smart-match-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  margin: 18px 0;
+  overflow: hidden;
+  transition: all .2s ease;
+}
+.smart-match-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.smart-match-header {
+  background: var(--grad-soft);
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+}
+.smart-match-icon {
+  font-size: 28px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grad);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(188,69,20,.25);
+}
+.smart-match-header-text {
+  flex: 1;
+}
+.smart-match-title {
+  font-family: 'Newsreader', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.smart-match-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.smart-match-toggle {
+  font-size: 18px;
+  color: var(--accent);
+  font-weight: 700;
+  transition: transform .2s ease;
+}
+.smart-match-content {
+  padding: 24px;
+}
+
+/* File Upload Wrapper */
+.file-upload-wrapper {
+  text-align: center;
+  padding: 12px 0;
+}
+[data-testid="stFileUploader"] section,
+[data-testid="stFileUploaderDropzone"] {
+  background: var(--grad-soft) !important;
+  border: 2px dashed var(--accent-2) !important;
+  border-radius: 16px !important;
+  min-height: 140px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all .2s ease !important;
+}
+[data-testid="stFileUploader"] section:hover,
+[data-testid="stFileUploaderDropzone"]:hover {
+  border-color: var(--accent) !important;
+  background: var(--accent-soft) !important;
+  transform: scale(1.01);
+}
+[data-testid="stFileUploader"] section * {
+  color: var(--ink) !important;
+}
+[data-testid="stFileUploader"] button {
+  background: var(--grad) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 8px 20px !important;
+  box-shadow: 0 4px 12px rgba(188,69,20,.25) !important;
+  transition: all .2s ease !important;
+}
+[data-testid="stFileUploader"] button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(188,69,20,.35) !important;
+}
+[data-testid="stFileUploaderFile"] {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+}
+[data-testid="stFileUploaderFile"] * { color: var(--ink) !important; }
+
+/* Analysis States */
+.analysis-loading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--grad-soft);
+  border-radius: 16px;
+  margin: 12px 0;
+  border: 1px solid var(--line);
+}
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(188,69,20,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+.loading-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.analysis-success {
+  background: linear-gradient(135deg, #f0f7f0 0%, #f5faf5 100%);
+  border: 1px solid #c6e4c6;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin: 12px 0;
+  animation: popIn .3s ease;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.success-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.success-icon {
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2f6b34;
+  border-radius: 50%;
+  color: white;
+}
+.success-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2f6b34;
+}
+.best-match-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--grad);
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  margin: 8px 0 16px;
+  box-shadow: 0 6px 18px rgba(188,69,20,.3);
+}
+.match-summary {
+  font-style: italic;
+  color: #2f6b34;
+  background: rgba(47,107,52,0.05);
+  border-left: 3px solid #2f6b34;
+  padding: 12px 16px;
+  border-radius: 0 10px 10px 0;
+  margin: 12px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.matched-cats-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.matched-cat-tag {
+  background: white;
+  border: 1px solid #c6e4c6;
+  color: #2f6b34;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.analysis-warning {
+  background: #fff9e6;
+  border: 1px solid #f0c85c;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.analysis-error {
+  background: #fff0f0;
+  border: 1px solid #e8b4b4;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.state-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.state-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Security Note */
+.security-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.security-icon {
+  font-size: 16px;
+  color: var(--accent);
+}
 
 /* ---- UNIVERSITY BANNER ---- */
 .uni-banner {
@@ -471,9 +731,11 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 .stLinkButton a {
   background: var(--ink) !important; color: #ffffff !important;
   border: none !important; border-radius: 999px !important; font-weight: 600 !important;
+  transition: all .2s ease !important;
 }
 .stLinkButton a:hover { background: var(--grad) !important; color:#fff !important;
-  box-shadow: 0 6px 18px rgba(188,69,20,.35) !important; }
+  box-shadow: 0 6px 18px rgba(188,69,20,.35) !important;
+  transform: translateY(-1px) !important; }
 .stLinkButton a p { color:#ffffff !important; }
 
 /* Desktop: nudge the Apply button down so it centers against the card beside
@@ -489,16 +751,6 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   [data-testid="stHorizontalBlock"]:has(.job-card) .job-card { margin-bottom: 8px !important; }
   [data-testid="stHorizontalBlock"]:has(.job-card) + [data-testid="stHorizontalBlock"] { margin-top: 20px; }
 }
-
-/* ---- SIDEBAR: force dark, readable text on light bg ---- */
-[data-testid="stSidebar"] { background: #ebe5db; border-right: 1.5px solid var(--ink); }
-[data-testid="stSidebar"] * { color: var(--ink) !important; }
-[data-testid="stSidebar"] .stCaption, [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
-  color: var(--muted) !important;
-}
-[data-testid="stSidebar"] h3 { color: var(--ink) !important; font-weight: 700; }
-
-footer, #MainMenu { visibility: hidden; }
 
 /* ---- DROPDOWN POPUP MENUS: readable text ---- */
 /* the popover list that appears when a selectbox/multiselect is opened */
@@ -528,8 +780,10 @@ ul[role="listbox"] li:hover {
   border: 1px solid var(--line) !important;
   border-radius: 12px !important;
   box-shadow: var(--shadow-sm) !important;
+  transition: all .2s ease !important;
 }
-[data-baseweb="select"] > div:focus-within { border-color: var(--accent-2) !important; }
+[data-baseweb="select"] > div:focus-within { border-color: var(--accent-2) !important;
+  box-shadow: 0 0 0 3px rgba(232,116,44,0.15) !important; }
 [data-baseweb="select"] > div > div,
 [data-baseweb="select"] [data-baseweb="input"] div,
 [data-baseweb="select"] span {
@@ -539,12 +793,6 @@ ul[role="listbox"] li:hover {
 /* the placeholder / single selected value text */
 [data-baseweb="select"] div[value], 
 [data-baseweb="select"] div[aria-selected] { color: var(--ink) !important; }
-
-/* ---- FIX: hide Streamlit's dark top header bar ---- */
-[data-testid="stHeader"] { display: none !important; }
-[data-testid="stToolbar"] { display: none !important; }
-.stApp > header { display: none !important; }
-[data-testid="stAppViewContainer"] > .main { padding-top: 0 !important; }
 
 /* ---- FIX: dropdown option HOVER/HIGHLIGHT state (was dark box, dark text) ---- */
 ul[role="listbox"] li[aria-selected="true"],
@@ -566,36 +814,6 @@ ul[role="listbox"] li[aria-selected="true"] *,
   background-color: transparent !important;
 }
 
-/* ---- FIX: file uploader drop-zone + expander panels (dark by default) ---- */
-[data-testid="stFileUploader"] section,
-[data-testid="stFileUploaderDropzone"] {
-  background: #ffffff !important; border: 1.5px dashed var(--line) !important;
-  border-radius: 16px !important;
-}
-[data-testid="stFileUploader"] section:hover,
-[data-testid="stFileUploaderDropzone"]:hover { border-color: var(--accent-2) !important; }
-[data-testid="stFileUploader"] section *,
-[data-testid="stFileUploaderDropzone"] * { color: var(--ink) !important; }
-[data-testid="stFileUploader"] button {
-  background: var(--ink) !important; color: #fff !important; border: none !important;
-}
-[data-testid="stFileUploader"] button * { color:#fff !important; }
-/* uploaded-file chip */
-[data-testid="stFileUploaderFile"] { background:#ffffff !important; }
-[data-testid="stFileUploaderFile"] * { color: var(--ink) !important; }
-/* expander ("What we detected") */
-[data-testid="stExpander"] details,
-[data-testid="stExpander"] summary {
-  background: #ffffff !important; color: var(--ink) !important;
-  border: 1px solid var(--line) !important; border-radius: 14px !important;
-  box-shadow: var(--shadow-sm);
-}
-[data-testid="stExpander"] * { color: var(--ink) !important; }
-
-/* ---- No sidebar: controls are in the main page now (mobile-safe) ---- */
-[data-testid="stSidebar"] { display: none !important; }
-[data-testid="stSidebarCollapsedControl"], [data-testid="collapsedControl"] { display: none !important; }
-
 /* ---- GROW YOUR SKILLS PANEL ---- */
 .grow-panel {
   background: var(--card); border: 1px solid var(--line); border-radius: 20px;
@@ -613,6 +831,11 @@ ul[role="listbox"] li[aria-selected="true"] *,
 }
 .grow-card {
   background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px;
+  transition: all .2s ease;
+}
+.grow-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 .grow-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; }
 .grow-card-icon { font-size: 17px; line-height: 1; }
@@ -689,6 +912,11 @@ ul[role="listbox"] li[aria-selected="true"] *,
   .uni-banner .uni-name { font-size: 20px !important; }
   .job-title { font-size: 17px !important; }
   .site-footer .footer-row { flex-direction: column; align-items: flex-start; }
+  .smart-match-header { flex-direction: row; align-items: center; gap: 12px; padding: 16px; }
+  .smart-match-icon { font-size: 22px; width: 40px; height: 40px; }
+  .smart-match-title { font-size: 18px; }
+  .smart-match-subtitle { font-size: 12px; }
+  .smart-match-content { padding: 16px; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -777,34 +1005,135 @@ with c2:
         chosen_employer = None
         st.write("")
 
-# ── Resume upload (AI-powered) ──
+# ── REDESIGNED SMART MATCH SECTION ───────────────────────────────────────────
 resume_cats = []
-with st.expander("📄 Smart match · upload your resume to match jobs to your skills"):
-    if PYPDF_OK and GENAI_OK and GEMINI_KEY:
+
+st.markdown('<div class="section-label">✨ Smart Match</div>', unsafe_allow_html=True)
+
+if PYPDF_OK and GENAI_OK and GEMINI_KEY:
+    # Smart Match Card
+    st.markdown("""
+    <div class="smart-match-card">
+      <div class="smart-match-header">
+        <div class="smart-match-icon">📄</div>
+        <div class="smart-match-header-text">
+          <div class="smart-match-title">Match jobs to your unique skills</div>
+          <div class="smart-match-subtitle">Upload your resume → AI analyzes your skills → Filters jobs to what fits you best</div>
+        </div>
+      </div>
+      <div class="smart-match-content">
+    """, unsafe_allow_html=True)
+
+    with st.container():
         resume_file = st.file_uploader(
-            "Upload your resume (PDF). Gradaroo reads your skills and matches jobs.",
-            type=["pdf"])
+            "hidden_label",
+            type=["pdf"],
+            label_visibility="collapsed",
+            key="smart_resume_upload"
+        )
+
         if resume_file is not None:
-            with st.spinner("Reading your resume..."):
-                result = analyse_resume(resume_file, GEMINI_KEY)
+            # Analyse once per uploaded file, then cache in session_state.
+            # Streamlit re-runs the whole script on every widget interaction
+            # (e.g. changing a filter); without this guard we'd re-call Gemini
+            # on each rerun — burning quota, adding latency, and risking the
+            # match silently resetting on a transient error. Keyed by name+size
+            # so a genuinely new upload triggers a fresh analysis.
+            file_sig = (resume_file.name, getattr(resume_file, "size", None))
+            if st.session_state.get("resume_sig") != file_sig:
+                with st.container():
+                    st.markdown("""
+                    <div class="analysis-loading">
+                      <div class="loading-spinner"></div>
+                      <div class="loading-text">Reading your resume and matching your skills...</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
+                    st.session_state["resume_sig"] = file_sig
+            result = st.session_state["resume_result"]
+
             if result["ok"] and result["categories"]:
                 resume_cats = result["categories"]
                 top = resume_cats[0]
-                st.success(f"Best match → **{top}**"
-                           + (f" +{len(resume_cats)-1} more" if len(resume_cats) > 1 else ""))
-                if result.get("summary"):
-                    # summary is LLM free text; st.caption renders as plain text
-                    # (not HTML), so it is safe to pass through directly.
-                    st.caption(f"💡 {result['summary']}")
-                st.markdown("**All matched areas:** " + " · ".join(resume_cats))
+                other_cats = resume_cats[1:]
+                summary = result.get("summary", "")
+
+                # Build success HTML. top/summary/other_cats are escaped via
+                # safe() because the category list and summary originate from
+                # the LLM and are rendered with unsafe_allow_html=True.
+                other_cats_html = "".join(
+                    f'<span class="matched-cat-tag">{safe(cat)}</span>' for cat in other_cats
+                )
+
+                success_html = f"""
+                <div class="analysis-success">
+                  <div class="success-header">
+                    <div class="success-icon">✅</div>
+                    <div class="success-title">Skill match complete!</div>
+                  </div>
+                  <div style="font-size: 14px; color: #2f6b34; margin-bottom: 8px; font-weight: 600;">
+                    Your best match:
+                  </div>
+                  <div class="best-match-pill">✨ {safe(top)}</div>
+                """
+
+                if summary:
+                    success_html += f'<div class="match-summary">💡 {safe(summary)}</div>'
+
+                if other_cats:
+                    success_html += f"""
+                    <div style="font-size: 13px; font-weight: 600; color: #2f6b34; margin-top: 4px;">
+                      Also matches:
+                    </div>
+                    <div class="matched-cats-list">{other_cats_html}</div>
+                    """
+
+                success_html += "</div>"
+                st.markdown(success_html, unsafe_allow_html=True)
+
             elif result["ok"]:
-                st.warning("AI couldn't confidently match your resume. "
-                           "Showing all jobs. Use the filter below.")
+                st.markdown(f"""
+                <div class="analysis-warning">
+                  <span class="state-icon">⚠️</span>
+                  <div class="state-text"><strong>Couldn't confidently match your resume.</strong><br>Showing all jobs. Use the category filter below to narrow results.</div>
+                </div>
+                """, unsafe_allow_html=True)
             else:
-                st.error(result.get("error", "Something went wrong."))
-        st.caption("Your resume is read securely to find your skills. See About for how we handle your data.")
-    else:
-        st.caption("Resume matching needs: pip install pypdf google-genai")
+                st.markdown(f"""
+                <div class="analysis-error">
+                  <span class="state-icon">❌</span>
+                  <div class="state-text"><strong>Oops!</strong><br>{safe(result.get('error', 'Something went wrong.'))}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+    # Security note
+    st.markdown("""
+    <div class="security-note">
+      <span class="security-icon">🔒</span>
+      <div>Your resume is processed securely to find your skills. It is never stored, shared, or used for any purpose beyond matching you to jobs. See About for details.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Close smart match card
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+else:
+    st.markdown("""
+    <div class="smart-match-card">
+      <div class="smart-match-content" style="padding: 20px 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <span style="font-size: 24px;">🔧</span>
+          <div style="font-weight: 700; font-size: 16px; color: var(--ink);">Resume matching needs a quick setup</div>
+        </div>
+        <div style="font-size: 14px; color: var(--muted); line-height: 1.6; padding-left: 36px;">
+          Install the required packages to enable AI-powered resume matching:
+          <div style="margin-top: 10px; padding: 12px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; font-family: monospace; font-size: 13px; color: var(--ink);">
+            pip install pypdf google-genai
+          </div>
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ── UNIVERSITY BANNER ─────────────────────────────────────────────────────────
