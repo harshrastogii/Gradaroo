@@ -52,12 +52,6 @@ def safe_url(url):
 
 
 # ── RESUME ENGINE (Gemini-powered) ────────────────────────────────────────────
-# Instead of a fixed keyword list, we send the resume text to Google's Gemini
-# model, which UNDERSTANDS the person's actual skills/interests (not just their
-# degree) and maps them to job categories. Robust to any skill, any field.
-
-# Adzuna's real category labels - Gemini maps to these exact strings so the
-# result plugs straight into the job filter.
 ADZUNA_CATEGORIES = [
     "IT Jobs", "Healthcare & Nursing Jobs", "Engineering Jobs",
     "Accounting & Finance Jobs", "Teaching Jobs", "Admin Jobs",
@@ -89,13 +83,10 @@ RESUME:
 """
 
 def analyse_resume(uploaded_file, api_key):
-    """Read a PDF resume, ask Gemini to understand it, return matched categories."""
-    # 0. size guard BEFORE we parse anything
     size = getattr(uploaded_file, "size", None)
     if size is not None and size > MAX_RESUME_BYTES:
         return {"ok": False, "error": "That PDF is too large (max 5 MB)."}
 
-    # 1. extract text from the PDF
     if not PYPDF_OK:
         return {"ok": False, "error": "pypdf not installed"}
     try:
@@ -106,7 +97,6 @@ def analyse_resume(uploaded_file, api_key):
     if len(text.strip()) < 30:
         return {"ok": False, "error": "No readable text found (scanned image?)."}
 
-    # 2. ask Gemini to understand it (with retries for transient 503/429)
     if not GENAI_OK:
         return {"ok": False, "error": "google-genai not installed"}
     import time
@@ -121,13 +111,11 @@ def analyse_resume(uploaded_file, api_key):
             raw = (resp.text or "").replace("```json", "").replace("```", "").strip()
             data = json.loads(raw)
             cats = [c for c in data.get("categories", []) if c in ADZUNA_CATEGORIES]
-            # summary is free text from the LLM; treat as untrusted downstream.
             return {"ok": True, "categories": cats, "summary": data.get("summary", "")}
         except Exception as e:
             last_err = str(e)
-            # transient errors → wait and retry; otherwise stop
             if "503" in last_err or "429" in last_err or "UNAVAILABLE" in last_err:
-                time.sleep(2 * (attempt + 1))  # 2s, 4s, 6s
+                time.sleep(2 * (attempt + 1))
                 continue
             logger.warning("Gemini analysis failed: %s", last_err)
             return {"ok": False, "error": "AI analysis failed. Please try again."}
@@ -135,9 +123,6 @@ def analyse_resume(uploaded_file, api_key):
 
 # ── API CREDENTIALS ───────────────────────────────────────────────────────────
 def get_secret(key, default):
-    # Render and most hosts provide secrets as environment variables; Streamlit
-    # Community Cloud provides them via st.secrets. Check both so the same code
-    # runs on either platform.
     val = os.environ.get(key)
     if val:
         return val
@@ -152,15 +137,11 @@ GEMINI_KEY = get_secret("GEMINI_API_KEY", "")
 ADZUNA_URL = "https://api.adzuna.com/v1/api/jobs/au/search/1"
 KOFI_URL = "https://ko-fi.com/harshrastogi"
 
-# Adzuna keys are required for the core job search.
 def _keys_missing():
     return not APP_ID or not APP_KEY
 
 
 # ── COURSE CATALOG ────────────────────────────────────────────────────────────
-# Keyed to Adzuna's exact category strings so it plugs straight into resume
-# matches and the interest filter. Plain links for now - swap to affiliate links
-# once programs approve. Free options are genuinely free; we earn nothing.
 COURSE_CATALOG = {
     "IT Jobs": {
         "free": [("freeCodeCamp · full coding & data curriculum", "https://www.freecodecamp.org/learn"),
@@ -210,7 +191,6 @@ COURSE_CATALOG = {
     },
 }
 
-# Tabler-style emoji icon per category (kept simple - no external font needed).
 CATEGORY_ICONS = {
     "IT Jobs": "💻",
     "PR, Advertising & Marketing Jobs": "📣",
@@ -226,16 +206,6 @@ CATEGORY_ICONS = {
 
 
 def render_growth_panel(matched_cats, max_cards=3):
-    """Render a 'Grow your skills' panel for the matched categories.
-
-    matched_cats: ordered list of Adzuna category strings (resume match first,
-    else the user's chosen interest filters). Only categories we have curated
-    learning options for are shown, capped at max_cards.
-
-    Note: catalog labels/URLs are our own trusted constants, but we still escape
-    on output as defence-in-depth so this stays safe if the catalog ever grows
-    to include externally-sourced entries.
-    """
     shown = [c for c in matched_cats if c in COURSE_CATALOG][:max_cards]
     if not shown:
         return
@@ -255,7 +225,6 @@ def render_growth_panel(matched_cats, max_cards=3):
         icon = CATEGORY_ICONS.get(cat, "🌱")
         rows = "".join(_row(l, u, True) for l, u in opts.get("free", []))
         rows += "".join(_row(l, u, False) for l, u in opts.get("paid", []))
-        # tidy the display name (drop trailing " Jobs")
         nice = cat[:-5] if cat.endswith(" Jobs") else cat
         cards.append(
             f'<div class="grow-card"><div class="grow-card-head">'
@@ -298,14 +267,11 @@ def fetch_jobs(employer_name, region, max_results=30):
         r.raise_for_status()
         raw = r.json().get("results", [])
     except Exception as e:
-        # Log the detail server-side; show the user a generic message only.
         logger.warning("Adzuna fetch failed for %s: %s", employer_name, e)
         st.error(f"Couldn't fetch jobs for {safe(employer_name)} right now.")
         return []
     jobs = []
     for j in raw:
-        # Escape every field at ingestion. These come from third-party feeds
-        # Adzuna aggregates, so they are untrusted and must not carry raw HTML.
         jobs.append({
             "title": safe(j.get("title", "")),
             "employer": safe(j.get("company", {}).get("display_name", "")),
@@ -313,7 +279,7 @@ def fetch_jobs(employer_name, region, max_results=30):
             "location": safe(j.get("location", {}).get("display_name", "")),
             "contract": safe((j.get("contract_time") or "n/a").replace("_", "-")),
             "created": safe(j.get("created", "")[:10]),
-            "url": j.get("redirect_url", ""),  # sanitised at render via safe_url()
+            "url": j.get("redirect_url", ""),
             "matched_employer": safe(employer_name),
         })
     return jobs
@@ -323,7 +289,6 @@ def fetch_jobs(employer_name, region, max_results=30):
 st.set_page_config(page_title="Gradaroo", page_icon="🎓",
                    layout="centered", initial_sidebar_state="collapsed")
 
-# Hide Streamlit's auto-generated page nav; we render our own clean labels below.
 st.markdown("""
 <style>
 [data-testid="stSidebarNav"] { display: none; }
@@ -356,7 +321,6 @@ st.markdown("""
 }
 
 .stApp { background: var(--paper); }
-/* Scale the whole app down. Streamlit overrides root html, so target stApp too. */
 html { font-size: 88%; }
 .stApp, [data-testid="stAppViewContainer"] { font-size: 14px; }
 .block-container { max-width: 1050px; padding-top: 2rem; }
@@ -376,6 +340,14 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 .topnav-link { color: var(--ink) !important; font-size: 14px; font-weight: 600;
   text-decoration: none !important; transition: color .14s ease; }
 .topnav-link:hover { color: var(--accent) !important; }
+.kofi-btn {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  background: var(--ink); color: #ffffff !important; text-decoration: none !important;
+  border-radius: 999px; padding: 9px 19px; font-size: 13px; font-weight: 600;
+  transition: all .16s ease;
+}
+.kofi-btn:hover { background: var(--grad); transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(188,69,20,.35); }
 
 /* ---- HERO ---- */
 .hero-wrap { text-align: center; padding: 30px 0 6px; animation: rise .6s ease both; }
@@ -424,28 +396,21 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 }
 .step-arrow { color: var(--muted); font-size: 14px; }
 
-/* ---- SMART MATCH SECTION ---- */
-.smart-match-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: var(--shadow-sm);
-  margin: 18px 0;
-  overflow: hidden;
-  transition: all .2s ease;
-}
-.smart-match-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
+/* ---- SMART MATCH SECTION (FIXED) ---- */
 .smart-match-header {
   background: var(--grad-soft);
   padding: 18px 24px;
   display: flex;
   align-items: center;
   gap: 16px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  box-shadow: var(--shadow-sm);
+  transition: all .2s ease;
+  margin-bottom: -1px;
+  z-index: 2;
+  position: relative;
 }
 .smart-match-icon {
   font-size: 28px;
@@ -458,9 +423,7 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(188,69,20,.25);
 }
-.smart-match-header-text {
-  flex: 1;
-}
+.smart-match-header-text { flex: 1; }
 .smart-match-title {
   font-family: 'Newsreader', serif;
   font-size: 20px;
@@ -472,38 +435,52 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   color: var(--muted);
   margin-top: 2px;
 }
-.smart-match-toggle {
-  font-size: 18px;
-  color: var(--accent);
-  font-weight: 700;
-  transition: transform .2s ease;
-}
-.smart-match-content {
+
+/* Smart Match Content Container (anchored via .smart-match-root) */
+div:has(> .smart-match-root) {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 0 0 20px 20px;
+  box-shadow: var(--shadow-sm);
   padding: 24px;
+  margin-top: 0;
+  transition: all .2s ease;
 }
 
-/* File Upload Wrapper */
-.file-upload-wrapper {
-  text-align: center;
-  padding: 12px 0;
+/* Hover effect for entire card */
+.smart-match-header:hover,
+div:has(> .smart-match-root):hover {
+  box-shadow: var(--shadow-md);
+}
+div:has(> .smart-match-root):hover {
+  transform: translateY(-2px);
+}
+.smart-match-header:hover + div div:has(> .smart-match-root) {
+  transform: translateY(-2px);
+}
+
+/* File Uploader Styling (integrated) */
+[data-testid="stFileUploader"] {
+  margin: 0 0 16px 0;
 }
 [data-testid="stFileUploader"] section,
 [data-testid="stFileUploaderDropzone"] {
   background: var(--grad-soft) !important;
   border: 2px dashed var(--accent-2) !important;
   border-radius: 16px !important;
-  min-height: 140px !important;
+  min-height: 120px !important;
+  padding: 20px !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all .2s ease !important;
+  margin: 0 !important;
 }
 [data-testid="stFileUploader"] section:hover,
 [data-testid="stFileUploaderDropzone"]:hover {
   border-color: var(--accent) !important;
   background: var(--accent-soft) !important;
-  transform: scale(1.01);
 }
 [data-testid="stFileUploader"] section * {
   color: var(--ink) !important;
@@ -517,16 +494,18 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   padding: 8px 20px !important;
   box-shadow: 0 4px 12px rgba(188,69,20,.25) !important;
   transition: all .2s ease !important;
+  margin-top: 8px !important;
 }
 [data-testid="stFileUploader"] button:hover {
   transform: translateY(-1px) !important;
   box-shadow: 0 6px 16px rgba(188,69,20,.35) !important;
 }
 [data-testid="stFileUploaderFile"] {
-  background: var(--card) !important;
+  background: var(--paper) !important;
   border: 1px solid var(--line) !important;
   border-radius: 12px !important;
   padding: 12px 16px !important;
+  margin: 12px 0 0 0 !important;
 }
 [data-testid="stFileUploaderFile"] * { color: var(--ink) !important; }
 
@@ -555,9 +534,7 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   font-weight: 600;
   color: var(--ink);
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .analysis-success {
   background: linear-gradient(135deg, #f0f7f0 0%, #f5faf5 100%);
@@ -567,10 +544,7 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   margin: 12px 0;
   animation: popIn .3s ease;
 }
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
+@keyframes popIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 .success-header {
   display: flex;
   align-items: center;
@@ -685,7 +659,7 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 .uni-banner {
   background: linear-gradient(135deg, #1c1917 0%, #33241a 100%);
   border-radius: 20px; box-shadow: var(--shadow-md);
-  padding: 24px 28px; margin: 18px 0 8px;
+  padding: 24px 28px; margin: 24px 0 8px;
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
 }
 .uni-banner .uni-name {
@@ -722,7 +696,7 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 .section-label {
   display: flex; align-items: center; gap: 12px;
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
-  color: var(--muted); font-weight: 700; margin: 16px 0 6px;
+  color: var(--muted); font-weight: 700; margin: 24px 0 12px;
 }
 .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .count-big { font-family: 'Newsreader', serif; font-size: 32px; font-weight: 600; color: var(--ink); }
@@ -738,43 +712,27 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   transform: translateY(-1px) !important; }
 .stLinkButton a p { color:#ffffff !important; }
 
-/* Desktop: nudge the Apply button down so it centers against the card beside
-   it (replaces the old blank-line spacers, which broke mobile). Scoped to the
-   job-card rows on wide screens only. */
 @media (min-width: 769px) {
   [data-testid="stHorizontalBlock"]:has(.job-card) .stLinkButton { margin-top: 30px; }
 }
-/* Mobile: columns stack vertically. Pull the button up snug under its card,
-   add room before the next card. */
 @media (max-width: 768px) {
   [data-testid="stHorizontalBlock"]:has(.job-card) .stLinkButton { margin-top: 0 !important; margin-bottom: 4px; }
   [data-testid="stHorizontalBlock"]:has(.job-card) .job-card { margin-bottom: 8px !important; }
   [data-testid="stHorizontalBlock"]:has(.job-card) + [data-testid="stHorizontalBlock"] { margin-top: 20px; }
 }
 
-/* ---- DROPDOWN POPUP MENUS: readable text ---- */
-/* the popover list that appears when a selectbox/multiselect is opened */
+/* ---- DROPDOWN STYLING ---- */
 [data-baseweb="popover"] { background: #ffffff !important; }
-[data-baseweb="popover"] li,
-[data-baseweb="popover"] [role="option"],
-[data-baseweb="menu"] li,
-ul[role="listbox"] li {
-  color: var(--ink) !important;
-  background: #ffffff !important;
+[data-baseweb="popover"] li, [data-baseweb="popover"] [role="option"],
+[data-baseweb="menu"] li, ul[role="listbox"] li {
+  color: var(--ink) !important; background: #ffffff !important;
 }
-[data-baseweb="popover"] li:hover,
-[data-baseweb="popover"] [role="option"]:hover,
+[data-baseweb="popover"] li:hover, [data-baseweb="popover"] [role="option"]:hover,
 ul[role="listbox"] li:hover {
-  background: var(--accent-soft) !important;
-  color: var(--accent) !important;
+  background: var(--accent-soft) !important; color: var(--accent) !important;
 }
-/* selected-value text inside the closed select boxes */
-[data-baseweb="select"] div { color: var(--ink) !important; }
-/* multiselect chosen tags */
 [data-baseweb="tag"] { background: var(--accent) !important; }
 [data-baseweb="tag"] span { color: #ffffff !important; }
-
-/* ---- FIX: closed select boxes - white bg, dark text (was dark-on-dark) ---- */
 [data-baseweb="select"] > div {
   background: #ffffff !important;
   border: 1px solid var(--line) !important;
@@ -784,41 +742,14 @@ ul[role="listbox"] li:hover {
 }
 [data-baseweb="select"] > div:focus-within { border-color: var(--accent-2) !important;
   box-shadow: 0 0 0 3px rgba(232,116,44,0.15) !important; }
-[data-baseweb="select"] > div > div,
-[data-baseweb="select"] [data-baseweb="input"] div,
-[data-baseweb="select"] span {
-  color: var(--ink) !important;
-  -webkit-text-fill-color: var(--ink) !important;
-}
-/* the placeholder / single selected value text */
-[data-baseweb="select"] div[value], 
-[data-baseweb="select"] div[aria-selected] { color: var(--ink) !important; }
-
-/* ---- FIX: dropdown option HOVER/HIGHLIGHT state (was dark box, dark text) ---- */
-ul[role="listbox"] li[aria-selected="true"],
-ul[role="listbox"] li:hover,
-[data-baseweb="menu"] li[aria-selected="true"],
-[data-baseweb="menu"] li:hover,
-[role="option"][aria-selected="true"],
-[role="option"]:hover {
-  background-color: var(--accent-soft) !important;
-  color: var(--accent) !important;
-}
-/* make sure ALL text inside a hovered/highlighted option is readable */
-ul[role="listbox"] li:hover *,
-ul[role="listbox"] li[aria-selected="true"] *,
-[role="option"]:hover *,
-[role="option"][aria-selected="true"] * {
-  color: var(--accent) !important;
-  -webkit-text-fill-color: var(--accent) !important;
-  background-color: transparent !important;
+[data-baseweb="select"] > div > div, [data-baseweb="select"] span {
+  color: var(--ink) !important; -webkit-text-fill-color: var(--ink) !important;
 }
 
 /* ---- GROW YOUR SKILLS PANEL ---- */
 .grow-panel {
   background: var(--card); border: 1px solid var(--line); border-radius: 20px;
-  box-shadow: var(--shadow-sm);
-  padding: 24px 26px; margin: 10px 0 4px;
+  box-shadow: var(--shadow-sm); padding: 24px 26px; margin: 10px 0 4px;
 }
 .grow-head { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
 .grow-seed { font-size: 20px; line-height: 1; }
@@ -833,10 +764,7 @@ ul[role="listbox"] li[aria-selected="true"] *,
   background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px;
   transition: all .2s ease;
 }
-.grow-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
+.grow-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .grow-card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; }
 .grow-card-icon { font-size: 17px; line-height: 1; }
 .grow-card-title { font-weight: 700; font-size: 14px; color: var(--ink); }
@@ -846,11 +774,9 @@ ul[role="listbox"] li[aria-selected="true"] *,
   background: var(--card); border: 1px solid var(--line); border-radius: 10px;
   padding: 8px 12px; text-decoration: none !important; transition: all .14s ease;
 }
-.course-row:hover { border-color: var(--accent-2); transform: translateY(-1px);
-  box-shadow: var(--shadow-sm); }
+.course-row:hover { border-color: var(--accent-2); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 .course-label {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12.5px; color: var(--ink) !important; line-height: 1.35;
+  display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink) !important; line-height: 1.35;
 }
 .course-tag {
   flex-shrink: 0; font-size: 10px; font-weight: 700; text-transform: uppercase;
@@ -860,15 +786,6 @@ ul[role="listbox"] li[aria-selected="true"] *,
 .tag-paid { background: var(--accent-soft); color: var(--accent); }
 .course-ext { flex-shrink: 0; color: var(--muted); font-size: 13px; }
 
-/* ---- KO-FI + SUPPORT ---- */
-.kofi-btn {
-  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
-  background: var(--ink); color: #ffffff !important; text-decoration: none !important;
-  border-radius: 999px; padding: 9px 19px; font-size: 13px; font-weight: 600;
-  transition: all .16s ease;
-}
-.kofi-btn:hover { background: var(--grad); transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(188,69,20,.35); }
 .grow-support { font-size: 12px; color: var(--muted); margin-top: 14px;
   padding-top: 12px; border-top: 1px dashed var(--line); }
 .grow-support a { color: var(--accent) !important; font-weight: 600; text-decoration: none; }
@@ -890,13 +807,10 @@ ul[role="listbox"] li[aria-selected="true"] *,
   font-size: 12.5px; color: var(--muted); padding: 6px 0 16px;
 }
 
-/* ---- ACCESSIBILITY: respect reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
-  .job-card:hover, .course-row:hover, .kofi-btn:hover { transform: none !important; }
 }
 
-/* ---- MOBILE sizing tweaks ---- */
 @media (max-width: 768px) {
   .hero-wrap { padding-top: 18px; }
   .topbar .wordmark { font-size: 26px !important; }
@@ -916,7 +830,7 @@ ul[role="listbox"] li[aria-selected="true"] *,
   .smart-match-icon { font-size: 22px; width: 40px; height: 40px; }
   .smart-match-title { font-size: 18px; }
   .smart-match-subtitle { font-size: 12px; }
-  .smart-match-content { padding: 16px; }
+  div:has(> .smart-match-root) { padding: 16px; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -930,7 +844,6 @@ def uni_label(u):
     mark = "✅ " if u.get("mode") == "alumni" else ""
     return f"{mark}{u['name']} · {u['city']} · {qs}"
 
-# sort: curated-alumni universities first (CDU leading), then others by QS rank
 def sort_key(u):
     is_alumni = u.get("mode") == "alumni"
     if u["id"] == "cdu":
@@ -974,7 +887,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# If the core API keys aren't configured, show setup help and stop.
 if _keys_missing():
     st.warning(
         "**Setup needed.** This app needs Adzuna API keys to fetch jobs.\n\n"
@@ -985,7 +897,7 @@ if _keys_missing():
     st.stop()
 
 
-# ── CONTROLS (main page, always visible, mobile-safe) ────────────────────────--
+# ── CONTROLS ────────────────────────────────────────────────────────────────--
 st.markdown('<div class="section-label">🎓 Find your university</div>', unsafe_allow_html=True)
 c1, c2 = st.columns([1, 1])
 with c1:
@@ -1005,26 +917,28 @@ with c2:
         chosen_employer = None
         st.write("")
 
-# ── REDESIGNED SMART MATCH SECTION ───────────────────────────────────────────
+# ── RESTRUCTURED SMART MATCH SECTION (FIXED) ─────────────────────────────────
 resume_cats = []
 
 st.markdown('<div class="section-label">✨ Smart Match</div>', unsafe_allow_html=True)
 
-if PYPDF_OK and GENAI_OK and GEMINI_KEY:
-    # Smart Match Card
-    st.markdown("""
-    <div class="smart-match-card">
-      <div class="smart-match-header">
-        <div class="smart-match-icon">📄</div>
-        <div class="smart-match-header-text">
-          <div class="smart-match-title">Match jobs to your unique skills</div>
-          <div class="smart-match-subtitle">Upload your resume → AI analyzes your skills → Filters jobs to what fits you best</div>
-        </div>
-      </div>
-      <div class="smart-match-content">
-    """, unsafe_allow_html=True)
+# Smart Match Header (complete, closed div - no unclosed tags!)
+st.markdown("""
+<div class="smart-match-header">
+  <div class="smart-match-icon">📄</div>
+  <div class="smart-match-header-text">
+    <div class="smart-match-title">Match jobs to your unique skills</div>
+    <div class="smart-match-subtitle">Upload your resume → AI analyzes your skills → Filters jobs to what fits you best</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-    with st.container():
+# Smart Match Content Container (uses CSS anchor trick to style as card content)
+with st.container():
+    # Anchor element for CSS to target this container
+    st.markdown('<div class="smart-match-root"></div>', unsafe_allow_html=True)
+
+    if PYPDF_OK and GENAI_OK and GEMINI_KEY:
         resume_file = st.file_uploader(
             "hidden_label",
             type=["pdf"],
@@ -1033,23 +947,16 @@ if PYPDF_OK and GENAI_OK and GEMINI_KEY:
         )
 
         if resume_file is not None:
-            # Analyse once per uploaded file, then cache in session_state.
-            # Streamlit re-runs the whole script on every widget interaction
-            # (e.g. changing a filter); without this guard we'd re-call Gemini
-            # on each rerun — burning quota, adding latency, and risking the
-            # match silently resetting on a transient error. Keyed by name+size
-            # so a genuinely new upload triggers a fresh analysis.
             file_sig = (resume_file.name, getattr(resume_file, "size", None))
             if st.session_state.get("resume_sig") != file_sig:
-                with st.container():
-                    st.markdown("""
-                    <div class="analysis-loading">
-                      <div class="loading-spinner"></div>
-                      <div class="loading-text">Reading your resume and matching your skills...</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
-                    st.session_state["resume_sig"] = file_sig
+                st.markdown("""
+                <div class="analysis-loading">
+                  <div class="loading-spinner"></div>
+                  <div class="loading-text">Reading your resume and matching your skills...</div>
+                </div>
+                """, unsafe_allow_html=True)
+                st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
+                st.session_state["resume_sig"] = file_sig
             result = st.session_state["resume_result"]
 
             if result["ok"] and result["categories"]:
@@ -1058,9 +965,6 @@ if PYPDF_OK and GENAI_OK and GEMINI_KEY:
                 other_cats = resume_cats[1:]
                 summary = result.get("summary", "")
 
-                # Build success HTML. top/summary/other_cats are escaped via
-                # safe() because the category list and summary originate from
-                # the LLM and are rendered with unsafe_allow_html=True.
                 other_cats_html = "".join(
                     f'<span class="matched-cat-tag">{safe(cat)}</span>' for cat in other_cats
                 )
@@ -1092,35 +996,31 @@ if PYPDF_OK and GENAI_OK and GEMINI_KEY:
                 st.markdown(success_html, unsafe_allow_html=True)
 
             elif result["ok"]:
-                st.markdown(f"""
+                st.markdown("""
                 <div class="analysis-warning">
                   <span class="state-icon">⚠️</span>
                   <div class="state-text"><strong>Couldn't confidently match your resume.</strong><br>Showing all jobs. Use the category filter below to narrow results.</div>
                 </div>
                 """, unsafe_allow_html=True)
             else:
+                error_msg = safe(result.get('error', 'Something went wrong.'))
                 st.markdown(f"""
                 <div class="analysis-error">
                   <span class="state-icon">❌</span>
-                  <div class="state-text"><strong>Oops!</strong><br>{safe(result.get('error', 'Something went wrong.'))}</div>
+                  <div class="state-text"><strong>Oops!</strong><br>{error_msg}</div>
                 </div>
                 """, unsafe_allow_html=True)
 
-    # Security note
-    st.markdown("""
-    <div class="security-note">
-      <span class="security-icon">🔒</span>
-      <div>Your resume is processed securely to find your skills. It is never stored, shared, or used for any purpose beyond matching you to jobs. See About for details.</div>
-    </div>
-    """, unsafe_allow_html=True)
+        # Security note (inside the styled container)
+        st.markdown("""
+        <div class="security-note">
+          <span class="security-icon">🔒</span>
+          <div>Your resume is processed securely to find your skills. It is never stored, shared, or used for any purpose beyond matching you to jobs. See About for details.</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # Close smart match card
-    st.markdown("</div></div>", unsafe_allow_html=True)
-
-else:
-    st.markdown("""
-    <div class="smart-match-card">
-      <div class="smart-match-content" style="padding: 20px 24px;">
+    else:
+        st.markdown("""
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
           <span style="font-size: 24px;">🔧</span>
           <div style="font-weight: 700; font-size: 16px; color: var(--ink);">Resume matching needs a quick setup</div>
@@ -1131,14 +1031,10 @@ else:
             pip install pypdf google-genai
           </div>
         </div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 
 # ── UNIVERSITY BANNER ─────────────────────────────────────────────────────────
-# uni fields come from our own employers.json (trusted), but escape anyway as
-# defence-in-depth so a future data edit can't introduce markup.
 qs_html = (f'<div class="qs-badge"><span class="label">QS World 2026</span>'
            f'<span class="num">#{safe(uni["qs"])}</span></div>') if uni.get("qs") else \
           '<div class="qs-badge"><span class="label">QS World 2026</span><span class="num">NR</span></div>'
@@ -1223,7 +1119,6 @@ else:
     for j in visible:
         col1, col2 = st.columns([5, 1])
         with col1:
-            # All j[...] values were escaped at ingestion in fetch_jobs().
             st.markdown(f"""
             <div class="job-card">
               <div class="job-title">{j['title']}</div>
@@ -1236,12 +1131,9 @@ else:
             </div>
             """, unsafe_allow_html=True)
         with col2:
-            # safe_url() guarantees an http(s) scheme; blocks javascript:/data:.
             st.link_button("Apply ↗", safe_url(j["url"]), use_container_width=True)
 
 # ── GROW YOUR SKILLS ──────────────────────────────────────────────────────────
-# Drive the panel off the resume match first (most personalised), else off the
-# user's chosen interest filters. Only categories we've curated courses for show.
 growth_source = resume_cats if resume_cats else chosen_cats
 if growth_source:
     st.write("")
@@ -1254,7 +1146,7 @@ st.markdown(f"""
       <div class="footer-wordmark">Grad<span class="go">aroo</span></div>
       <div class="footer-credits">Employer data compiled from public sources ·
         Job listings via the Adzuna API · QS World University Rankings 2026 ·
-        “Apply” opens the original posting.</div>
+        "Apply" opens the original posting.</div>
     </div>
     <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
   </div>
