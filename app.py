@@ -236,16 +236,16 @@ def render_growth_panel(matched_cats, max_cards=3):
 
     st.markdown(f"""
 <div class="grow-panel">
-  <div class="grow-head">
-    <span class="grow-seed">🌱</span>
-    <span class="grow-title">Grow your skills</span>
-  </div>
-  <div class="grow-sub">Free options are genuinely free. Paid courses include a
-    shareable certificate, which helps prove the skill to employers. Pick whatever
-    fits your budget. These are plain links; we earn nothing from them.</div>
-  <div class="grow-grid">{''.join(cards)}</div>
-  <div class="grow-support">Gradaroo is free and earns nothing from these links.
-    If it helped you, you can <a href="{KOFI_URL}" target="_blank" rel="noopener">buy me a coffee on Ko-fi ☕</a></div>
+<div class="grow-head">
+<span class="grow-seed">🌱</span>
+<span class="grow-title">Grow your skills</span>
+</div>
+<div class="grow-sub">Free options are genuinely free. Paid courses include a
+shareable certificate, which helps prove the skill to employers. Pick whatever
+fits your budget. These are plain links; we earn nothing from them.</div>
+<div class="grow-grid">{''.join(cards)}</div>
+<div class="grow-support">Gradaroo is free and earns nothing from these links.
+If it helped you, you can <a href="{KOFI_URL}" target="_blank" rel="noopener">buy me a coffee on Ko-fi ☕</a></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1008,12 +1008,12 @@ n_unis = len(universities_sorted)
 n_emps = sum(len(u.get("employers", [])) for u in universities_sorted)
 st.markdown(f"""
 <div class="topbar">
-  <a class="wordmark" href="https://gradaroo.com" target="_self">Grad<span class="go">aroo</span></a>
-  <div class="topbar-links">
-    <a class="topnav-link" href="https://gradaroo.com" target="_self">Home</a>
-    <a class="topnav-link" href="/About_Gradaroo" target="_self">About</a>
-    <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
-  </div>
+<a class="wordmark" href="https://gradaroo.com" target="_self">Grad<span class="go">aroo</span></a>
+<div class="topbar-links">
+<a class="topnav-link" href="https://gradaroo.com" target="_self">Home</a>
+<a class="topnav-link" href="/About_Gradaroo" target="_self">About</a>
+<a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1021,15 +1021,15 @@ st.markdown(f"""
 # the live stats, then straight into the tool.
 st.markdown(f"""
 <div class="hero-wrap" style="padding: 18px 0 4px;">
-  <div class="hero-chip"><span class="live-dot"></span>Live graduate jobs · Australia</div>
-  <h1 style="font-size:38px; margin-top:14px;">Let's find where <em>you</em> fit.</h1>
-  <div class="hero-sub">Pick your university below to see where its graduates work — then
-    browse live openings, or smart-match jobs to your resume.</div>
-  <div class="stat-strip">
-    <div class="stat"><div class="n">{n_unis}</div><div class="l">Universities</div></div>
-    <div class="stat"><div class="n">{n_emps}</div><div class="l">Employers</div></div>
-    <div class="stat"><div class="n"><em>Live</em></div><div class="l">Updated daily</div></div>
-  </div>
+<div class="hero-chip"><span class="live-dot"></span>Live graduate jobs · Australia</div>
+<h1 style="font-size:38px; margin-top:14px;">Let's find where <em>you</em> fit.</h1>
+<div class="hero-sub">Pick your university below to see where its graduates work — then
+browse live openings, or smart-match jobs to your resume.</div>
+<div class="stat-strip">
+<div class="stat"><div class="n">{n_unis}</div><div class="l">Universities</div></div>
+<div class="stat"><div class="n">{n_emps}</div><div class="l">Employers</div></div>
+<div class="stat"><div class="n"><em>Live</em></div><div class="l">Updated daily</div></div>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1075,14 +1075,14 @@ with st.container():
 
     # Header (in-card, single block — no separate outer box)
     st.markdown("""
-    <div class="smart-match-header">
-      <div class="smart-match-icon">📄</div>
-      <div class="smart-match-header-text">
-        <div class="smart-match-title">Match jobs to your unique skills</div>
-        <div class="smart-match-subtitle">Upload your resume → AI reads your skills → we filter jobs to what fits you best.</div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="smart-match-header">
+<div class="smart-match-icon">📄</div>
+<div class="smart-match-header-text">
+<div class="smart-match-title">Match jobs to your unique skills</div>
+<div class="smart-match-subtitle">Upload your resume → AI reads your skills → we filter jobs to what fits you best.</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
 
     if PYPDF_OK and GENAI_OK and GEMINI_KEY:
         resume_file = st.file_uploader(
@@ -1099,11 +1099,11 @@ with st.container():
             file_sig = (resume_file.name, getattr(resume_file, "size", None))
             if st.session_state.get("resume_sig") != file_sig:
                 status_slot.markdown("""
-                <div class="analysis-loading">
-                  <div class="loading-spinner"></div>
-                  <div class="loading-text">Reading your resume and matching your skills…</div>
-                </div>
-                """, unsafe_allow_html=True)
+<div class="analysis-loading">
+<div class="loading-spinner"></div>
+<div class="loading-text">Reading your resume and matching your skills…</div>
+</div>
+""", unsafe_allow_html=True)
                 st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
                 st.session_state["resume_sig"] = file_sig
 
@@ -1122,63 +1122,63 @@ with st.container():
                 )
 
                 success_html = f"""
-                <div class="analysis-success">
-                  <div class="success-header">
-                    <div class="success-icon">✅</div>
-                    <div class="success-title">Skill match complete!</div>
-                  </div>
-                  <div style="font-size: 14px; color: #2f6b34; margin-bottom: 8px; font-weight: 600;">
-                    Your best match:
-                  </div>
-                  <div class="best-match-pill">✨ {safe(top)}</div>
-                """
+<div class="analysis-success">
+<div class="success-header">
+<div class="success-icon">✅</div>
+<div class="success-title">Skill match complete!</div>
+</div>
+<div style="font-size: 14px; color: #2f6b34; margin-bottom: 8px; font-weight: 600;">
+Your best match:
+</div>
+<div class="best-match-pill">✨ {safe(top)}</div>
+"""
                 if summary:
                     success_html += f'<div class="match-summary">💡 {safe(summary)}</div>'
                 if other_cats:
                     success_html += f"""
-                    <div style="font-size: 13px; font-weight: 600; color: #2f6b34; margin-top: 4px;">
-                      Also matches:
-                    </div>
-                    <div class="matched-cats-list">{other_cats_html}</div>
-                    """
+<div style="font-size: 13px; font-weight: 600; color: #2f6b34; margin-top: 4px;">
+Also matches:
+</div>
+<div class="matched-cats-list">{other_cats_html}</div>
+"""
                 success_html += "</div>"
                 st.markdown(success_html, unsafe_allow_html=True)
 
             elif result["ok"]:
                 st.markdown("""
-                <div class="analysis-warning">
-                  <span class="state-icon">⚠️</span>
-                  <div class="state-text"><strong>Couldn't confidently match your resume.</strong><br>Showing all jobs. Use the category filter below to narrow results.</div>
-                </div>
-                """, unsafe_allow_html=True)
+<div class="analysis-warning">
+<span class="state-icon">⚠️</span>
+<div class="state-text"><strong>Couldn't confidently match your resume.</strong><br>Showing all jobs. Use the category filter below to narrow results.</div>
+</div>
+""", unsafe_allow_html=True)
             else:
                 error_msg = safe(result.get('error', 'Something went wrong.'))
                 st.markdown(f"""
-                <div class="analysis-error">
-                  <span class="state-icon">❌</span>
-                  <div class="state-text"><strong>Oops!</strong><br>{error_msg}</div>
-                </div>
-                """, unsafe_allow_html=True)
+<div class="analysis-error">
+<span class="state-icon">❌</span>
+<div class="state-text"><strong>Oops!</strong><br>{error_msg}</div>
+</div>
+""", unsafe_allow_html=True)
 
         # Security note (inside the same card)
         st.markdown("""
-        <div class="security-note">
-          <span class="security-icon">🔒</span>
-          <div>Your resume is processed securely to find your skills. It is never stored, shared, or used for any purpose beyond matching you to jobs. See About for details.</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="security-note">
+<span class="security-icon">🔒</span>
+<div>Your resume is processed securely to find your skills. It is never stored, shared, or used for any purpose beyond matching you to jobs. See About for details.</div>
+</div>
+""", unsafe_allow_html=True)
 
     else:
         st.markdown("""
-        <div class="setup-hint">
-          <span style="font-size: 24px;">🔧</span>
-          <div class="setup-hint-title">Resume matching needs a quick setup</div>
-        </div>
-        <div style="font-size: 14px; color: var(--muted); line-height: 1.6;">
-          Install the required packages to enable AI-powered resume matching:
-          <div class="setup-code">pip install pypdf google-genai</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="setup-hint">
+<span style="font-size: 24px;">🔧</span>
+<div class="setup-hint-title">Resume matching needs a quick setup</div>
+</div>
+<div style="font-size: 14px; color: var(--muted); line-height: 1.6;">
+Install the required packages to enable AI-powered resume matching:
+<div class="setup-code">pip install pypdf google-genai</div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # ── UNIVERSITY BANNER ─────────────────────────────────────────────────────────
@@ -1187,11 +1187,11 @@ qs_html = (f'<div class="qs-badge"><span class="label">QS World 2026</span>'
           '<div class="qs-badge"><span class="label">QS World 2026</span><span class="num">NR</span></div>'
 st.markdown(f"""
 <div class="uni-banner">
-  <div>
-    <div class="uni-name">{safe(uni['name'])}</div>
-    <div class="uni-loc">📍 {safe(uni['city'])}, {safe(uni['state'])} · {safe(uni['region'])}</div>
-  </div>
-  {qs_html}
+<div>
+<div class="uni-name">{safe(uni['name'])}</div>
+<div class="uni-loc">📍 {safe(uni['city'])}, {safe(uni['state'])} · {safe(uni['region'])}</div>
+</div>
+{qs_html}
 </div>
 """, unsafe_allow_html=True)
 
@@ -1267,16 +1267,16 @@ else:
         col1, col2 = st.columns([5, 1])
         with col1:
             st.markdown(f"""
-            <div class="job-card">
-              <div class="job-title">{j['title']}</div>
-              <div class="job-employer">{j['employer'] or j['matched_employer']}</div>
-              <div class="job-meta">
-                <span class="cat-pill">{j['category']}</span>
-                🕒 {j['contract']} &nbsp;·&nbsp; 📍 {j['location']}
-                {('&nbsp;·&nbsp; posted ' + j['created']) if j['created'] else ''}
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
+<div class="job-card">
+<div class="job-title">{j['title']}</div>
+<div class="job-employer">{j['employer'] or j['matched_employer']}</div>
+<div class="job-meta">
+<span class="cat-pill">{j['category']}</span>
+🕒 {j['contract']} &nbsp;·&nbsp; 📍 {j['location']}
+{('&nbsp;·&nbsp; posted ' + j['created']) if j['created'] else ''}
+</div>
+</div>
+""", unsafe_allow_html=True)
         with col2:
             st.link_button("Apply ↗", safe_url(j["url"]), use_container_width=True)
 
@@ -1288,20 +1288,20 @@ if growth_source:
 
 st.markdown(f"""
 <div class="site-footer">
-  <div class="footer-row">
-    <div>
-      <div class="footer-wordmark">Grad<span class="go">aroo</span></div>
-      <div class="footer-credits">Employer data compiled from public sources ·
-        Job listings via the Adzuna API · QS World University Rankings 2026 ·
-        "Apply" opens the original posting.</div>
-      <div class="footer-links">
-        <a href="https://gradaroo.com" target="_self">Home</a> ·
-        <a href="/About_Gradaroo" target="_self">About</a> ·
-        <a href="mailto:harshrastogii@zohomail.com.au">Contact</a>
-      </div>
-    </div>
-    <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
-  </div>
-  <div class="footer-note">Built by Harsh Rastogi. A smarter, honest way to start a graduate job search.</div>
+<div class="footer-row">
+<div>
+<div class="footer-wordmark">Grad<span class="go">aroo</span></div>
+<div class="footer-credits">Employer data compiled from public sources ·
+Job listings via the Adzuna API · QS World University Rankings 2026 ·
+"Apply" opens the original posting.</div>
+<div class="footer-links">
+<a href="https://gradaroo.com" target="_self">Home</a> ·
+<a href="/About_Gradaroo" target="_self">About</a> ·
+<a href="mailto:harshrastogii@zohomail.com.au">Contact</a>
+</div>
+</div>
+<a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
+</div>
+<div class="footer-note">Built by Harsh Rastogi. A smarter, honest way to start a graduate job search.</div>
 </div>
 """, unsafe_allow_html=True)
