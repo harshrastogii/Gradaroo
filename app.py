@@ -941,6 +941,13 @@ ul[role="listbox"] li:hover {
 
 @media (max-width: 768px) {
   .hero-wrap { padding-top: 18px; }
+  /* Give the top bar enough breathing room so the dark "Support" pill isn't
+     clipped at the top against the reduced mobile container padding. The pill's
+     own vertical padding + line-height needs vertical space the 4px top padding
+     didn't provide on mobile. Desktop is untouched (this is mobile-only). */
+  .topbar { padding: 10px 0 8px; align-items: center; }
+  .topbar-links { gap: 12px; }
+  .kofi-btn { padding: 9px 16px; line-height: 1.3; }
   .topbar .wordmark { font-size: 26px !important; }
   .hero-wrap h1 { font-size: 32px !important; }
   .hero-sub { font-size: 14px !important; }
@@ -949,7 +956,7 @@ ul[role="listbox"] li:hover {
   .stat .l { font-size: 9px !important; }
   .step-chip { font-size: 12px !important; padding: 7px 13px !important; }
   .step-arrow { display: none; }
-  .block-container { padding: 1rem 0.6rem !important; max-width: 100% !important; }
+  .block-container { padding: 1.5rem 0.6rem 1rem !important; max-width: 100% !important; }
   .uni-banner { padding: 18px 20px !important; }
   .uni-banner .uni-name { font-size: 20px !important; }
   .job-title { font-size: 17px !important; }
