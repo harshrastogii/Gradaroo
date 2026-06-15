@@ -368,7 +368,36 @@ st.markdown("""
   --muted: #756c5f;
   --shadow-sm: 0 1px 2px rgba(28,25,23,.05), 0 4px 14px rgba(28,25,23,.06);
   --shadow-md: 0 4px 10px rgba(28,25,23,.07), 0 16px 36px rgba(28,25,23,.11);
+  --shadow-lift: 0 10px 24px rgba(122,36,10,.10), 0 24px 60px rgba(122,36,10,.14);
+  /* One shared easing + timing, identical to the landing page, so the app and
+     the marketing site move with the same "feel" (see UX review: seamless handoff). */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 0.16s var(--ease);
+  --t-med: 0.3s var(--ease);
 }
+
+/* ── SHARED MOTION LANGUAGE ────────────────────────────────────────────────
+   Content rises gently into place on first paint. The whole app uses ONE
+   keyframe + easing so every section breathes the same way. Staggered delays
+   make the page assemble top-to-bottom instead of popping in all at once.
+   All of this is opacity/transform only — GPU-cheap, and it cannot touch
+   React's DOM reconciliation, so it can't reintroduce the old crash class. */
+@keyframes gr-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes gr-rise-sm {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes gr-pop {
+  0%   { opacity: 0; transform: scale(.96) translateY(8px); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Reveal helper applied to major sections via wrapper markup. */
+.gr-reveal { animation: gr-rise .55s var(--ease) both; }
 
 .stApp { background: var(--paper); }
 html { font-size: 88%; }
@@ -464,10 +493,13 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
   padding: 22px 24px;
-  transition: box-shadow .2s ease;
+  transition: box-shadow var(--t-med), transform var(--t-med), border-color var(--t-med);
+  animation: gr-rise .55s var(--ease) both;
 }
 [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] > .smart-match-root):hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
+  border-color: rgba(232,116,44,.32);
 }
 
 /* The anchor itself must take no space (kills the white gap / empty box). */
@@ -497,6 +529,22 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   background: var(--grad);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(188,69,20,.25);
+  position: relative;
+  overflow: hidden;
+}
+/* A single slow sheen sweeps across the AI tile every few seconds — just enough
+   to read as "alive / intelligent" without becoming busy. One accent, used once. */
+.smart-match-icon::after {
+  content: "";
+  position: absolute; top: 0; left: -120%;
+  width: 80%; height: 100%;
+  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.45) 50%, transparent 100%);
+  transform: skewX(-18deg);
+  animation: gr-sheen 4.5s var(--ease) infinite;
+}
+@keyframes gr-sheen {
+  0%, 62% { left: -120%; }
+  82%, 100% { left: 160%; }
 }
 .smart-match-header-text { flex: 1; min-width: 0; }
 .smart-match-title {
@@ -602,14 +650,29 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   border-radius: 16px;
   padding: 20px 22px;
   margin: 14px 0 2px;
-  animation: popIn .3s ease;
+  animation: gr-pop .42s var(--ease) both;
 }
+/* The emotional peak of the app: each part of the result reveals in sequence
+   (header → pill → summary → tags), so the match feels "assembled for you"
+   rather than dumped on screen. This is the deliberate, reserved flourish. */
+.analysis-success > * { animation: gr-rise-sm .4s var(--ease) both; }
+.analysis-success > *:nth-child(1) { animation-delay: .05s; }
+.analysis-success > *:nth-child(2) { animation-delay: .13s; }
+.analysis-success > *:nth-child(3) { animation-delay: .21s; }
+.analysis-success > *:nth-child(4) { animation-delay: .29s; }
+.analysis-success > *:nth-child(5) { animation-delay: .37s; }
 @keyframes popIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 .success-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .success-icon {
   font-size: 18px; width: 30px; height: 30px;
   display: flex; align-items: center; justify-content: center;
   background: #2f6b34; border-radius: 50%; color: white;
+  animation: gr-check-pop .5s var(--ease) both .1s;
+}
+@keyframes gr-check-pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
 }
 .success-icon * { color: #fff !important; }
 .success-title { font-weight: 700; font-size: 16px; color: #2f6b34; }
@@ -630,6 +693,12 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
 .matched-cat-tag {
   background: white; border: 1px solid #c6e4c6; color: #2f6b34;
   padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.matched-cat-tag:hover {
+  transform: translateY(-2px);
+  border-color: #2f6b34;
+  box-shadow: 0 4px 12px rgba(47,107,52,.18);
 }
 
 .analysis-warning {
@@ -669,7 +738,22 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   border-radius: 20px; box-shadow: var(--shadow-md);
   padding: 24px 28px; margin: 24px 0 8px;
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  position: relative; overflow: hidden;
+  animation: gr-rise .5s var(--ease) both;
 }
+/* A barely-there warm glow drifts behind the banner — adds depth on the dark
+   surface without reading as an "effect". Slow enough to be felt, not watched. */
+.uni-banner::before {
+  content: ""; position: absolute; inset: -40% -10%;
+  background: radial-gradient(circle at 30% 40%, rgba(232,116,44,.14) 0%, transparent 55%);
+  pointer-events: none;
+  animation: gr-glow-drift 11s ease-in-out infinite alternate;
+}
+@keyframes gr-glow-drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(8%, 6%) scale(1.12); }
+}
+.uni-banner > * { position: relative; z-index: 1; }
 .uni-banner .uni-name {
   font-family: 'Newsreader', serif; font-size: 25px; font-weight: 600; color: #ffffff;
 }
@@ -678,7 +762,9 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   background: var(--grad); color: #fff; border-radius: 14px;
   box-shadow: 0 8px 22px rgba(188,69,20,.40);
   padding: 9px 18px; text-align: center; white-space: nowrap;
+  transition: transform var(--t-med), box-shadow var(--t-med);
 }
+.uni-banner:hover .qs-badge { transform: translateY(-2px) scale(1.03); box-shadow: 0 12px 28px rgba(188,69,20,.5); }
 .qs-badge .label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.13em; opacity: 0.9; display:block; color:#fff; }
 .qs-badge .num { font-size: 19px; font-weight: 700; color:#fff; }
 
@@ -687,12 +773,15 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   background: var(--card); border: 1px solid var(--line); border-radius: 16px;
   border-left: 3px solid transparent;
   box-shadow: var(--shadow-sm);
-  padding: 20px 22px; margin-bottom: 14px; transition: all .18s ease;
+  padding: 20px 22px; margin-bottom: 14px;
+  transition: transform var(--t-med), box-shadow var(--t-med), border-color var(--t-med);
+  animation: gr-rise-sm .45s var(--ease) both;
 }
 .job-card:hover { border-left-color: var(--accent-2);
-  transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  transform: translateY(-4px); box-shadow: var(--shadow-lift); }
 .job-title { font-family: 'Newsreader', serif; font-size: 20px; font-weight: 600;
-  line-height: 1.25; margin: 0 0 3px; color: var(--ink); }
+  line-height: 1.25; margin: 0 0 3px; color: var(--ink); transition: color var(--t-fast); }
+.job-card:hover .job-title { color: var(--accent); }
 .job-employer { font-weight: 600; font-size: 13.5px; color: var(--accent); margin-bottom: 9px; }
 .job-meta { font-size: 12.5px; color: var(--muted); }
 .cat-pill {
@@ -705,19 +794,25 @@ html, body, [class*="css"], .stMarkdown, p, span, div, label {
   display: flex; align-items: center; gap: 12px;
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
   color: var(--muted); font-weight: 700; margin: 24px 0 12px;
+  animation: gr-rise-sm .45s var(--ease) both;
 }
-.section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.section-label::after {
+  content: ""; flex: 1; height: 1px; background: var(--line);
+  transform-origin: left; animation: gr-line-draw .6s var(--ease) both .1s;
+}
+@keyframes gr-line-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .count-big { font-family: 'Newsreader', serif; font-size: 32px; font-weight: 600; color: var(--ink); }
 
 /* ---- LINK BUTTON ---- */
 .stLinkButton a {
   background: var(--ink) !important; color: #ffffff !important;
   border: none !important; border-radius: 999px !important; font-weight: 600 !important;
-  transition: all .2s ease !important;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast) !important;
 }
 .stLinkButton a:hover { background: var(--grad) !important; color:#fff !important;
   box-shadow: 0 6px 18px rgba(188,69,20,.35) !important;
   transform: translateY(-1px) !important; }
+.stLinkButton a:active { transform: translateY(0) scale(.98) !important; }
 .stLinkButton a p { color:#ffffff !important; }
 
 @media (min-width: 769px) {
@@ -839,6 +934,9 @@ ul[role="listbox"] li:hover {
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+  /* Looping ambient accents are purely decorative — hide them entirely so
+     nothing moves for users who asked for stillness. */
+  .smart-match-icon::after, .uni-banner::before { display: none !important; }
 }
 
 @media (max-width: 768px) {
