@@ -12,7 +12,6 @@ import json
 import logging
 import requests
 import streamlit as st
-import streamlit.components.v1 as components
 
 # resume parsing is optional - app still runs if these aren't installed
 try:
@@ -290,13 +289,14 @@ def fetch_jobs(employer_name, region, max_results=30):
 st.set_page_config(page_title="Gradaroo", page_icon="🎓",
                    layout="centered", initial_sidebar_state="collapsed")
 
-# ── BRANDED LOADING CURTAIN ───────────────────────────────────────────────────
-# On first load the browser briefly shows Streamlit's bare shell (the sidebar
-# chevron, an empty frame) before our Python paints the real UI. We cover that
-# raw-Streamlit flash with a branded curtain. See the gated block below for the
-# full two-layer explanation.
-
-# ── ALWAYS-ON: hide Streamlit chrome (runs on every rerun) ────────────────────
+# ── HIDE STREAMLIT CHROME + SAFE BOOT COVER ───────────────────────────────────
+# Runs on every rerun. Two jobs:
+#  1) Hide Streamlit's sidebar/chevron/toolbar so the app reads as a clean site.
+#  2) A PURE-CSS boot cover (::before pseudo-element on the app container) paints
+#     a branded screen over Streamlit's bare boot frame, then fades itself out via
+#     a CSS animation. It is pseudo-element only — it adds NO real DOM node, so
+#     React has nothing extra to reconcile or detach. This is deliberately simple:
+#     an earlier JS-based curtain crashed React's render cycle, so we use CSS only.
 st.markdown("""
 <style>
 [data-testid="stSidebarNav"] { display: none; }
@@ -308,164 +308,47 @@ st.markdown("""
 [data-testid="stDecoration"] { display: none; }
 header { display: none; }
 
-/* The loader injector runs from a 0x0 components.html iframe. Collapse its
-   Streamlit wrapper entirely so it never adds a gap at the top of the page. */
-[data-testid="stIFrame"][height="0"],
-iframe[title="streamlit_component_iframe"][height="0"] { display: none !important; }
-[data-testid="stElementContainer"]:has(> iframe[height="0"]) {
-  display: none !important; height: 0 !important; margin: 0 !important; padding: 0 !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ── BRANDED LOADING CURTAIN (first load only) ─────────────────────────────────
-# Problem: on first load the browser shows Streamlit's bare shell (the sidebar
-# chevron, empty frame) for ~1-2s before our Python paints the real UI. That
-# raw-Streamlit flash looks unpolished.
-#
-# Fix, in two cooperating layers:
-#   1) A CSS-only curtain paints a branded full-screen cover the instant the
-#      stylesheet applies — no JS needed, so it's up before Streamlit connects.
-#   2) A components.html injector lifts an identical curtain into the TOP-LEVEL
-#      document so it covers the whole page during boot, then fades it out once
-#      our real hero element has rendered (with a safety timeout).
-#
-# We only render the curtain on the FIRST script run of a session. On reruns
-# (changing the dropdown, uploading a resume, etc.) Streamlit re-executes this
-# file top-to-bottom; without this gate the curtain would re-flash mid-session.
-_first_load = "booted" not in st.session_state
-if _first_load:
-    st.session_state["booted"] = True
-
-    st.markdown("""
-<style>
-@keyframes gr-curtain-autohide {
-  0%, 92% { opacity: 1; visibility: visible; }
+/* --- Branded boot cover (CSS-only, pseudo-elements; no JS, no DOM nodes) --- */
+@keyframes gr-boot-fade {
+  0%   { opacity: 1; visibility: visible; }
+  82%  { opacity: 1; visibility: visible; }
   100% { opacity: 0; visibility: hidden; }
 }
-#gradaroo-boot-curtain {
-  position: fixed; inset: 0; z-index: 2147483646;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 22px;
+@keyframes gr-boot-spin { to { transform: rotate(360deg); } }
+
+/* The cover sits on the app container's ::before, fixed to the viewport. It
+   plays once for ~2.6s then fades to hidden and stops (forwards), after which
+   pointer-events are gone and the app is fully interactive. */
+[data-testid="stAppViewContainer"]::before {
+  content: "Gradaroo";
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
   background: #faf6f0;
-  background-image: radial-gradient(circle at 50% 38%, #fff5ed 0%, #faf6f0 60%);
+  background-image: radial-gradient(circle at 50% 40%, #fff5ed 0%, #faf6f0 60%);
   font-family: 'Newsreader', Georgia, serif;
-  /* auto-hide after ~6.5s as a hard fail-safe; JS normally removes it sooner */
-  animation: gr-curtain-autohide 6.5s ease forwards;
+  font-size: 42px; font-weight: 600; letter-spacing: -0.02em; color: #1c1917;
+  animation: gr-boot-fade 2.6s ease forwards;
+  pointer-events: none;
 }
-#gradaroo-boot-curtain .gr-mark {
-  font-size: 40px; font-weight: 600; letter-spacing: -0.02em; color: #1c1917;
-}
-#gradaroo-boot-curtain .gr-mark .go { color: #bc4514; font-style: italic; }
-#gradaroo-boot-curtain .gr-dots { display: flex; gap: 9px; margin-top: 2px; }
-#gradaroo-boot-curtain .gr-dots span {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: linear-gradient(135deg, #bc4514 0%, #e8742c 100%);
-  animation: gr-boot-bounce 1.4s ease-in-out infinite both;
-}
-#gradaroo-boot-curtain .gr-dots span:nth-child(1) { animation-delay: -0.32s; }
-#gradaroo-boot-curtain .gr-dots span:nth-child(2) { animation-delay: -0.16s; }
-#gradaroo-boot-curtain .gr-tag {
-  font-family: 'Libre Franklin', -apple-system, sans-serif;
-  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-  font-weight: 700; color: #756c5f;
-}
-@keyframes gr-boot-bounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-  40% { transform: scale(1); opacity: 1; }
+/* Spinner ring above the wordmark via ::after. */
+[data-testid="stAppViewContainer"]::after {
+  content: "";
+  position: fixed; left: 50%; top: calc(50% - 56px);
+  width: 34px; height: 34px; margin-left: -17px;
+  border: 3px solid rgba(188,69,20,0.18);
+  border-top-color: #bc4514;
+  border-radius: 50%;
+  z-index: 10000;
+  animation: gr-boot-spin 0.9s linear infinite, gr-boot-fade 2.6s ease forwards;
+  pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  #gradaroo-boot-curtain { animation: none; }
-  #gradaroo-boot-curtain .gr-dots span { animation: none; opacity: 0.7; }
+  [data-testid="stAppViewContainer"]::before,
+  [data-testid="stAppViewContainer"]::after { animation: gr-boot-fade 1.2s ease forwards; }
+  [data-testid="stAppViewContainer"]::after { border-top-color: rgba(188,69,20,0.18); }
 }
 </style>
-
-<!-- Layer 1 curtain markup (lives in the app view; covers the bare frame).
-     Note: <script> in st.markdown is stripped by Streamlit's sanitizer, so this
-     layer is intentionally CSS-only. It is removed promptly by layer 2's script
-     on normal loads, and self-hides via the gr-curtain-autohide keyframe as a
-     hard fail-safe if layer 2 is ever unavailable. -->
-<div id="gradaroo-boot-curtain">
-  <div class="gr-mark">Grad<span class="go">aroo</span></div>
-  <div class="gr-dots"><span></span><span></span><span></span></div>
-  <div class="gr-tag">Loading live graduate jobs…</div>
-</div>
 """, unsafe_allow_html=True)
-
-    # Layer 2: lift an identical curtain into the TOP document and remove both
-    # once the real hero has painted. Runs from a tiny component iframe but acts
-    # on window.parent, so it covers the whole Streamlit page during boot.
-    components.html("""
-<script>
-(function () {
-  var doc;
-  try { doc = window.parent.document; } catch (e) { return; }  // same-origin only
-  if (!doc) return;
-
-  var ID = "gradaroo-boot-curtain-top";
-  if (doc.getElementById(ID)) return;  // already injected this session
-
-  // Inject styles into the top document (separate from the app-view curtain CSS).
-  var style = doc.createElement("style");
-  style.textContent = ""
-    + "#" + ID + "{position:fixed;inset:0;z-index:2147483647;display:flex;"
-    + "flex-direction:column;align-items:center;justify-content:center;gap:22px;"
-    + "background:#faf6f0;background-image:radial-gradient(circle at 50% 38%,#fff5ed 0%,#faf6f0 60%);"
-    + "font-family:'Newsreader',Georgia,serif;transition:opacity .55s ease,visibility .55s ease;}"
-    + "#" + ID + " .grm{font-size:42px;font-weight:600;letter-spacing:-.02em;color:#1c1917;}"
-    + "#" + ID + " .grm .go{color:#bc4514;font-style:italic;}"
-    + "#" + ID + " .grd{display:flex;gap:9px;margin-top:2px;}"
-    + "#" + ID + " .grd span{width:9px;height:9px;border-radius:50%;"
-    + "background:linear-gradient(135deg,#bc4514 0%,#e8742c 100%);"
-    + "animation:grbounce 1.4s ease-in-out infinite both;}"
-    + "#" + ID + " .grd span:nth-child(1){animation-delay:-.32s;}"
-    + "#" + ID + " .grd span:nth-child(2){animation-delay:-.16s;}"
-    + "#" + ID + " .grt{font-family:'Libre Franklin',-apple-system,sans-serif;"
-    + "font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#756c5f;}"
-    + "@keyframes grbounce{0%,80%,100%{transform:scale(.6);opacity:.3;}40%{transform:scale(1);opacity:1;}}"
-    + "@media (prefers-reduced-motion: reduce){#" + ID + " .grd span{animation:none;opacity:.7;}}";
-  doc.head.appendChild(style);
-
-  var curtain = doc.createElement("div");
-  curtain.id = ID;
-  curtain.innerHTML =
-      '<div class="grm">Grad<span class="go">aroo</span></div>'
-    + '<div class="grd"><span></span><span></span><span></span></div>'
-    + '<div class="grt">Loading live graduate jobs…</div>';
-  doc.body.appendChild(curtain);
-
-  var done = false;
-  function reveal() {
-    if (done) return;
-    done = true;
-    // fade the top curtain
-    curtain.style.opacity = "0";
-    curtain.style.visibility = "hidden";
-    setTimeout(function () { if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain); }, 650);
-    // also drop the in-app (layer 1) curtain immediately
-    var inApp = doc.getElementById("gradaroo-boot-curtain");
-    if (inApp) { inApp.style.transition = "opacity .4s ease"; inApp.style.opacity = "0";
-      setTimeout(function () { if (inApp && inApp.parentNode) inApp.parentNode.removeChild(inApp); }, 450); }
-  }
-
-  // Reveal as soon as our real hero (.hero-wrap) has rendered in the app view.
-  function ready() {
-    return doc.querySelector(".hero-wrap") || doc.querySelector(".uni-banner");
-  }
-  if (ready()) {
-    // give the paint a beat so we don't flash a half-painted frame
-    setTimeout(reveal, 250);
-  } else {
-    var obs = new MutationObserver(function () {
-      if (ready()) { obs.disconnect(); setTimeout(reveal, 200); }
-    });
-    obs.observe(doc.body, { childList: true, subtree: true });
-    // hard safety timeout: never let the curtain outstay its welcome
-    setTimeout(function () { try { obs.disconnect(); } catch (e) {} reveal(); }, 5000);
-  }
-})();
-</script>
-""", height=0, width=0)
 
 # ── CUSTOM STYLING ────────────────────────────────────────────────────────────
 st.markdown("""
@@ -1092,23 +975,16 @@ with st.container():
             key="smart_resume_upload",
         )
 
-        # FIX 3: loading message lives in a placeholder we clear once done.
-        status_slot = st.empty()
-
         if resume_file is not None:
             file_sig = (resume_file.name, getattr(resume_file, "size", None))
             if st.session_state.get("resume_sig") != file_sig:
-                status_slot.markdown("""
-<div class="analysis-loading">
-<div class="loading-spinner"></div>
-<div class="loading-text">Reading your resume and matching your skills…</div>
-</div>
-""", unsafe_allow_html=True)
-                st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
+                # st.spinner shows a transient "working" indicator and removes
+                # itself automatically when the block exits — no manual placeholder
+                # to clear, so there is no stale frame left behind on rerun.
+                with st.spinner("Reading your resume and matching your skills…"):
+                    st.session_state["resume_result"] = analyse_resume(resume_file, GEMINI_KEY)
                 st.session_state["resume_sig"] = file_sig
 
-            # Processing finished (cache hit or fresh) → remove the loading note.
-            status_slot.empty()
             result = st.session_state["resume_result"]
 
             if result["ok"] and result["categories"]:

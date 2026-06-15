@@ -4,13 +4,14 @@ This is page 2 of the multipage app. The home page (job search) is app.py.
 """
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 st.set_page_config(page_title="About Gradaroo", page_icon="🎓",
                    layout="centered", initial_sidebar_state="collapsed")
 
 # Hide Streamlit's auto-generated page nav and the top-right toolbar so the
-# page reads as a clean website, matching the home page.
+# page reads as a clean website, matching the home page. The branded boot cover
+# below is CSS-only (pseudo-elements) — no JS, no DOM manipulation — so it cannot
+# crash Streamlit's React render cycle.
 st.markdown("""
 <style>
 [data-testid="stSidebarNav"] { display: none; }
@@ -23,117 +24,42 @@ st.markdown("""
 #MainMenu { display: none; }
 header { display: none; }
 
-/* Collapse the 0x0 loader component iframe so it adds no gap. */
-[data-testid="stIFrame"][height="0"],
-iframe[title="streamlit_component_iframe"][height="0"] { display: none !important; }
-[data-testid="stElementContainer"]:has(> iframe[height="0"]) {
-  display: none !important; height: 0 !important; margin: 0 !important; padding: 0 !important;
-}
-
-/* ---- Branded loading curtain (same as home page; covers Streamlit's boot
-   flash when navigating here). CSS layer auto-hides as a fail-safe. ---- */
-@keyframes gr-curtain-autohide {
-  0%, 92% { opacity: 1; visibility: visible; }
+/* --- Branded boot cover (CSS-only; same as home page) --- */
+@keyframes gr-boot-fade {
+  0%   { opacity: 1; visibility: visible; }
+  82%  { opacity: 1; visibility: visible; }
   100% { opacity: 0; visibility: hidden; }
 }
-#gradaroo-boot-curtain {
-  position: fixed; inset: 0; z-index: 2147483646;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 22px;
+@keyframes gr-boot-spin { to { transform: rotate(360deg); } }
+[data-testid="stAppViewContainer"]::before {
+  content: "Gradaroo";
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
   background: #faf6f0;
-  background-image: radial-gradient(circle at 50% 38%, #fff5ed 0%, #faf6f0 60%);
+  background-image: radial-gradient(circle at 50% 40%, #fff5ed 0%, #faf6f0 60%);
   font-family: 'Newsreader', Georgia, serif;
-  animation: gr-curtain-autohide 6.5s ease forwards;
+  font-size: 42px; font-weight: 600; letter-spacing: -0.02em; color: #1c1917;
+  animation: gr-boot-fade 2.6s ease forwards;
+  pointer-events: none;
 }
-#gradaroo-boot-curtain .gr-mark { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; color: #1c1917; }
-#gradaroo-boot-curtain .gr-mark .go { color: #bc4514; font-style: italic; }
-#gradaroo-boot-curtain .gr-dots { display: flex; gap: 9px; margin-top: 2px; }
-#gradaroo-boot-curtain .gr-dots span {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: linear-gradient(135deg, #bc4514 0%, #e8742c 100%);
-  animation: gr-boot-bounce 1.4s ease-in-out infinite both;
-}
-#gradaroo-boot-curtain .gr-dots span:nth-child(1) { animation-delay: -0.32s; }
-#gradaroo-boot-curtain .gr-dots span:nth-child(2) { animation-delay: -0.16s; }
-#gradaroo-boot-curtain .gr-tag {
-  font-family: 'Libre Franklin', -apple-system, sans-serif;
-  font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #756c5f;
-}
-@keyframes gr-boot-bounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-  40% { transform: scale(1); opacity: 1; }
+[data-testid="stAppViewContainer"]::after {
+  content: "";
+  position: fixed; left: 50%; top: calc(50% - 56px);
+  width: 34px; height: 34px; margin-left: -17px;
+  border: 3px solid rgba(188,69,20,0.18);
+  border-top-color: #bc4514;
+  border-radius: 50%;
+  z-index: 10000;
+  animation: gr-boot-spin 0.9s linear infinite, gr-boot-fade 2.6s ease forwards;
+  pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  #gradaroo-boot-curtain { animation: none; }
-  #gradaroo-boot-curtain .gr-dots span { animation: none; opacity: 0.7; }
+  [data-testid="stAppViewContainer"]::before,
+  [data-testid="stAppViewContainer"]::after { animation: gr-boot-fade 1.2s ease forwards; }
+  [data-testid="stAppViewContainer"]::after { border-top-color: rgba(188,69,20,0.18); }
 }
 </style>
-
-<div id="gradaroo-boot-curtain">
-  <div class="gr-mark">Grad<span class="go">aroo</span></div>
-  <div class="gr-dots"><span></span><span></span><span></span></div>
-  <div class="gr-tag">Loading…</div>
-</div>
 """, unsafe_allow_html=True)
-
-# Top-document curtain + auto-dismiss once the About content (.about-title) paints.
-components.html("""
-<script>
-(function () {
-  var doc;
-  try { doc = window.parent.document; } catch (e) { return; }
-  if (!doc) return;
-  var ID = "gradaroo-boot-curtain-top";
-  if (doc.getElementById(ID)) return;
-
-  var style = doc.createElement("style");
-  style.textContent = ""
-    + "#" + ID + "{position:fixed;inset:0;z-index:2147483647;display:flex;"
-    + "flex-direction:column;align-items:center;justify-content:center;gap:22px;"
-    + "background:#faf6f0;background-image:radial-gradient(circle at 50% 38%,#fff5ed 0%,#faf6f0 60%);"
-    + "font-family:'Newsreader',Georgia,serif;transition:opacity .55s ease,visibility .55s ease;}"
-    + "#" + ID + " .grm{font-size:42px;font-weight:600;letter-spacing:-.02em;color:#1c1917;}"
-    + "#" + ID + " .grm .go{color:#bc4514;font-style:italic;}"
-    + "#" + ID + " .grd{display:flex;gap:9px;margin-top:2px;}"
-    + "#" + ID + " .grd span{width:9px;height:9px;border-radius:50%;"
-    + "background:linear-gradient(135deg,#bc4514 0%,#e8742c 100%);"
-    + "animation:grbounce 1.4s ease-in-out infinite both;}"
-    + "#" + ID + " .grd span:nth-child(1){animation-delay:-.32s;}"
-    + "#" + ID + " .grd span:nth-child(2){animation-delay:-.16s;}"
-    + "#" + ID + " .grt{font-family:'Libre Franklin',-apple-system,sans-serif;"
-    + "font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#756c5f;}"
-    + "@keyframes grbounce{0%,80%,100%{transform:scale(.6);opacity:.3;}40%{transform:scale(1);opacity:1;}}";
-  doc.head.appendChild(style);
-
-  var curtain = doc.createElement("div");
-  curtain.id = ID;
-  curtain.innerHTML =
-      '<div class="grm">Grad<span class="go">aroo</span></div>'
-    + '<div class="grd"><span></span><span></span><span></span></div>'
-    + '<div class="grt">Loading…</div>';
-  doc.body.appendChild(curtain);
-
-  var done = false;
-  function reveal() {
-    if (done) return; done = true;
-    curtain.style.opacity = "0"; curtain.style.visibility = "hidden";
-    setTimeout(function () { if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain); }, 650);
-    var inApp = doc.getElementById("gradaroo-boot-curtain");
-    if (inApp) { inApp.style.transition = "opacity .4s ease"; inApp.style.opacity = "0";
-      setTimeout(function () { if (inApp && inApp.parentNode) inApp.parentNode.removeChild(inApp); }, 450); }
-  }
-  function ready() { return doc.querySelector(".about-title"); }
-  if (ready()) { setTimeout(reveal, 250); }
-  else {
-    var obs = new MutationObserver(function () {
-      if (ready()) { obs.disconnect(); setTimeout(reveal, 200); }
-    });
-    obs.observe(doc.body, { childList: true, subtree: true });
-    setTimeout(function () { try { obs.disconnect(); } catch (e) {} reveal(); }, 5000);
-  }
-})();
-</script>
-""", height=0, width=0)
 
 # Shared styling (kept light here; the home page carries the full theme).
 st.markdown("""
