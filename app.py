@@ -1000,6 +1000,7 @@ st.markdown(f"""
 <div class="topbar-links">
 <a class="topnav-link" href="https://gradaroo.com" target="_self">Home</a>
 <a class="topnav-link" href="/About_Gradaroo" target="_self">About</a>
+<a class="topnav-link" href="https://resume.gradaroo.com" target="_blank">Resume converter</a>
 <a class="kofi-btn" href="{KOFI_URL}" target="_blank" rel="noopener">☕ Support</a>
 </div>
 </div>
