@@ -6,7 +6,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // Where the rest of Gradaroo lives. Override per-environment if the domains change.
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://gradaroo.com";
-const APP = process.env.NEXT_PUBLIC_APP_URL || "https://app.gradaroo.com";
+const APP = "https://gradaroo.com/jobs";
 
 export default function Page() {
   const [file, setFile] = useState<File | null>(null);
