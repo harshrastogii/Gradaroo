@@ -59,7 +59,7 @@ def parse_resume(resume_text: str, api_key: str) -> dict:
     for attempt in range(4):
         try:
             resp = client.models.generate_content(
-                model="gemini-2.5-flash", contents=prompt)
+                model="gemini-3.1-flash-lite", contents=prompt)
             raw = (resp.text or "").replace("```json", "").replace("```", "").strip()
             data = json.loads(raw)
             return _normalise(data)
